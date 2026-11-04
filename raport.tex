@@ -1,0 +1,390 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Kodowanie i język (polskie znaki) ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% --- Układ strony ---
+\usepackage[a4paper, left=2.5cm, right=2.5cm,
+            top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{setspace}
+\setstretch{1.08}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{2pt}
+
+% --- Matematyka, tabele i grafiki ---
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{placeins}
+
+% --- Listy i kod ---
+\usepackage{enumitem}
+\setlist[itemize]{topsep=3pt,itemsep=2pt,parsep=0pt}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\lstdefinestyle{sqlstyle}{
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue!65!black}\bfseries,
+    commentstyle=\color{gray!80!black}\itshape,
+    stringstyle=\color{red!55!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{black!25},
+    tabsize=4,
+    captionpos=b
+}
+\lstset{style=sqlstyle}
+
+% --- Nagłówki, linki i odsyłacze ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\usepackage[hidelinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+% --- Ustawienia podpisów ---
+\captionsetup{font=small,labelfont=bf}
+\renewcommand{\arraystretch}{1.15}
+
+% ============================================================
+% DANE PROJEKTU – ZMIEŃ W TYM MIEJSCU
+% ============================================================
+\newcommand{\tytulprojektu}{BDBT Projekt - Klub Lekkoatletyczny}
+\newcommand{\autorzy}{Emilia Wilczek 343170\par Piotr Małowiecki 337127}
+\newcommand{\dataoddania}{\today}
+
+% Pomocnicza kolumna tabel o stałej szerokości
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+\begin{document}
+
+% ============================================================
+% STRONA TYTUŁOWA
+% ============================================================
+\begin{titlepage}
+    \centering
+
+    {\LARGE\bfseries \tytulprojektu\par}
+    \vspace{0.6cm}
+    {\large \autorzy\par}
+
+    \vspace{1.5cm}
+    {\large \dataoddania\par}
+    \vspace*{1cm}
+\end{titlepage}
+
+% ============================================================
+% SPIS TREŚCI
+% ============================================================
+\tableofcontents
+\clearpage
+
+% ============================================================
+% 1. WPROWADZENIE
+% ============================================================
+\section{Zakres i cel projektu}
+% Opisz problem, cel projektu, zakres modelowanej dziedziny,
+% przyjęte założenia oraz użyte narzędzia.
+[UZUPEŁNIJ OPIS CELU I ZAKRESU PROJEKTU.]
+
+\subsection{Założenia projektowe}
+\begin{itemize}
+    \item [Pierwsze założenie.]
+    \item [Drugie założenie.]
+    \item [Kolejne założenie.]
+\end{itemize}
+
+\subsection{Wykorzystane oprogramowanie}
+\begin{itemize}
+    \item [Narzędzie / środowisko 1.]
+    \item [Narzędzie / środowisko 2.]
+\end{itemize}
+
+% ============================================================
+% 2. DEFINICJA SYSTEMU
+% ============================================================
+\section{Definicja systemu}
+
+\subsection{Perspektywy użytkowników}
+Przedstaw główne role użytkowników systemu i zakres ich dostępu.
+\begin{itemize}
+    \item \textbf{[Rola 1]} -- [opis uprawnień i zadań].
+    \item \textbf{[Rola 2]} -- [opis uprawnień i zadań].
+    \item \textbf{[Rola 3]} -- [opis uprawnień i zadań].
+\end{itemize}
+
+\subsection{Funkcjonalności zaimplementowanego systemu}
+
+\subsubsection{[Rola użytkownika 1]}
+\begin{itemize}
+    \item [Funkcjonalność.]
+    \item [Funkcjonalność.]
+\end{itemize}
+
+\subsubsection{[Rola użytkownika 2]}
+\begin{itemize}
+    \item [Funkcjonalność.]
+    \item [Funkcjonalność.]
+\end{itemize}
+
+\subsubsection{[Rola użytkownika 3]}
+\begin{itemize}
+    \item [Funkcjonalność.]
+    \item [Funkcjonalność.]
+\end{itemize}
+
+\subsection{Macierz uprawnień}
+% W razie potrzeby dodaj lub usuń kolumny.
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|X|C{2.0cm}|C{2.0cm}|C{2.0cm}|}
+\hline
+\textbf{Funkcjonalność} & \textbf{Rola 1} & \textbf{Rola 2} & \textbf{Rola 3} \\
+\hline
+[Przykładowa funkcja] & + & -- & + \\
+\hline
+[Przykładowa funkcja] & -- & + & + \\
+\hline
+[Przykładowa funkcja] & + & + & -- \\
+\hline
+\end{tabularx}
+\caption{Macierz uprawnień użytkowników}
+\label{tab:uprawnienia}
+\end{table}
+
+% ============================================================
+% 3. MODEL KONCEPTUALNY
+% ============================================================
+\section{Model konceptualny}
+
+\subsection{Definicja zbiorów encji}
+Dla każdej encji opisz jej rolę w modelowanej dziedzinie.
+\begin{itemize}
+    \item \textbf{[Encja 1]} -- [opis encji].
+    \item \textbf{[Encja 2]} -- [opis encji].
+    \item \textbf{[Encja 3]} -- [opis encji].
+\end{itemize}
+
+\subsection{Związki między encjami i ich typy}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3.2cm}|C{1.6cm}|X|}
+\hline
+\textbf{Relacja} & \textbf{Rodzaj} & \textbf{Opis} \\
+\hline
+[Encja A -- Encja B] & 1:N & [Opis związku i uczestnictwa.] \\
+\hline
+[Encja B -- Encja C] & M:N & [Opis związku i uczestnictwa.] \\
+\hline
+[Encja C -- Encja D] & 1:1 & [Opis związku i uczestnictwa.] \\
+\hline
+\end{tabularx}
+\caption{Związki między encjami}
+\label{tab:zwiazki}
+\end{table}
+
+\subsection{Atrybuty i ich dziedziny}
+% Skopiuj poniższą tabelę dla każdej encji.
+\subsubsection{[Nazwa encji]}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3.0cm}|L{2.5cm}|C{2.0cm}|X|}
+\hline
+\textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
+\hline
+ID\_[encja] & Integer & tak & Unikalny identyfikator encji. \\
+\hline
+[atrybut 2] & Varchar(50) & tak & [Opis atrybutu.] \\
+\hline
+[atrybut 3] & Date & nie & [Opis atrybutu.] \\
+\hline
+\end{tabularx}
+\caption{Atrybuty encji [nazwa encji]}
+\label{tab:atrybuty-encja}
+\end{table}
+
+\subsection{Dodatkowe reguły integralnościowe}
+\begin{itemize}
+    \item [Reguła biznesowa 1.]
+    \item [Reguła biznesowa 2.]
+\end{itemize}
+
+\subsection{Klucze kandydujące i główne}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\textbf{Nazwa encji} & \textbf{Klucz główny} & \textbf{Klucz kandydujący} \\
+\hline
+[Encja 1] & ID\_[encja 1] & [Atrybut / zestaw atrybutów] \\
+\hline
+[Encja 2] & ID\_[encja 2] & [Atrybut / zestaw atrybutów] \\
+\hline
+\end{tabularx}
+\caption{Klucze główne i kandydujące}
+\label{tab:klucze}
+\end{table}
+
+\subsection{Schemat ER na poziomie konceptualnym}
+% Umieść plik graficzny w folderze projektu, np. images/er_konceptualny.png.
+\IfFileExists{images/er_konceptualny.png}{%
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth,height=0.62\textheight,keepaspectratio]{images/er_konceptualny.png}
+    \caption{Model konceptualny}
+    \label{fig:er-konceptualny}
+\end{figure}
+}{%
+\noindent\textit{[Wstaw schemat ER w pliku graficznym model-konceptualny.]}
+}
+
+\subsection{Analiza pułapek szczelinowych i wachlarzowych}
+\subsubsection{Pułapka wachlarzowa}
+[Wyjaśnij, czy i gdzie występuje problem. Dodaj przykład.]
+
+\subsubsection{Pułapka szczelinowa}
+[Wyjaśnij, czy i gdzie występuje problem. Dodaj przykład.]
+
+% ============================================================
+% 4. MODEL LOGICZNY
+% ============================================================
+\section{Model logiczny}
+
+\subsection{Charakterystyka modelu relacyjnego}
+[Opisz przejście od modelu konceptualnego do relacyjnego.]
+
+\subsection{Zmiany właściwości niekompatybilnych z modelem relacyjnym}
+\begin{itemize}
+    \item [Opis zmiany pierwszej.]
+    \item [Opis zmiany drugiej.]
+    \item [Opis sposobu odwzorowania relacji M:N.]
+\end{itemize}
+
+\subsection{Proces normalizacji -- analiza i przykłady}
+\subsubsection{Pierwsza postać normalna (1PN)}
+[Uzasadnij spełnienie warunków 1PN.]
+
+\subsubsection{Druga postać normalna (2PN)}
+[Uzasadnij spełnienie warunków 2PN.]
+
+\subsubsection{Trzecia postać normalna (3PN)}
+[Uzasadnij spełnienie warunków 3PN.]
+
+\subsection{Schemat ER na poziomie modelu logicznego}
+\IfFileExists{images/er_logiczny.png}{%
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth,height=0.68\textheight,keepaspectratio]{images/er_logiczny.png}
+    \caption{Schemat logiczny bazy danych}
+    \label{fig:er-logiczny}
+\end{figure}
+}{%
+\noindent\textit{[Wstaw schemat ER w pliku graficznym model-logiczny.]}
+}
+
+\subsection{Więzy integralności}
+\begin{itemize}
+    \item \textbf{Integralność encji:} [opis kluczy głównych].
+    \item \textbf{Integralność referencyjna:} [opis kluczy obcych].
+    \item \textbf{Integralność domenowa:} [opis typów i ograniczeń].
+\end{itemize}
+
+\subsection{Proces denormalizacji -- analiza i przykłady}
+[Opisz rozważone przypadki denormalizacji oraz uzasadnij decyzje.]
+
+% ============================================================
+% 5. FAZA FIZYCZNA
+% ============================================================
+\section{Faza fizyczna}
+
+\subsection{Projekt transakcji i weryfikacja ich wykonalności}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|X|L{2.6cm}|L{2.1cm}|X|}
+\hline
+\textbf{Funkcjonalność} & \textbf{Uprawnienia} & \textbf{Wykonalność} & \textbf{Potrzebne zasoby} \\
+\hline
+[Operacja 1] & [Rola] & Wykonalne & [Tabele, relacje, widoki] \\
+\hline
+[Operacja 2] & [Rola] & Wykonalne & [Tabele, relacje, widoki] \\
+\hline
+\end{tabularx}
+\caption{Weryfikacja wykonalności transakcji}
+\label{tab:transakcje}
+\end{table}
+
+\subsection{Strojenie bazy danych -- dobór indeksów}
+Dla każdego indeksu podaj tabelę, kolumnę oraz uzasadnienie jego zastosowania.
+\begin{lstlisting}
+-- Opis: przyspieszenie wyszukiwania rekordow
+CREATE INDEX IX_nazwa_indeksu
+ON Nazwa_tabeli(nazwa_kolumny);
+\end{lstlisting}
+
+\subsection{Skrypt SQL zakładający bazę danych}
+% Dłuższy skrypt można dołączyć jako osobny plik:
+% \lstinputlisting[caption={Skrypt tworzący bazę danych}]{sql/create_database.sql}
+\begin{lstlisting}[caption={Przykładowa definicja tabeli}]
+CREATE TABLE Przykladowa_tabela (
+    id          NUMBER PRIMARY KEY,
+    nazwa       VARCHAR2(100) NOT NULL,
+    data_utw    DATE
+);
+\end{lstlisting}
+
+\subsection{Przykłady zapytań i poleceń SQL}
+Każde zapytanie opisz krótko: jaki problem rozwiązuje i jaki wynik zwraca.
+\begin{lstlisting}[caption={Przykładowe zapytanie}]
+SELECT kolumna, COUNT(*) AS liczba
+FROM Nazwa_tabeli
+GROUP BY kolumna;
+\end{lstlisting}
+
+% ============================================================
+% DODATKOWE ELEMENTY – OPCJONALNE
+% ============================================================
+% Dodaj kolejne sekcje, jeśli wymaga tego temat lub prowadzący.
+% Przykładowo:
+%
+% \section{Testowanie}
+% \subsection{Dane testowe}
+% \subsection{Scenariusze testowe}
+%
+% \section{Podsumowanie}
+% [Wnioski końcowe, ograniczenia i możliwe kierunki rozwoju.]
+
+% ============================================================
+% BIBLIOGRAFIA – JEŚLI WYMAGANA
+% ============================================================
+% \begin{thebibliography}{9}
+% \bibitem{oracle} Oracle, dokumentacja systemu Oracle Database,
+% \url{https://docs.oracle.com/}.
+% \end{thebibliography}
+
+\end{document}
