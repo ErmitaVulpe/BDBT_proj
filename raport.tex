@@ -106,20 +106,11 @@
 \section{Zakres i cel projektu}
 % Opisz problem, cel projektu, zakres modelowanej dziedziny,
 % przyjęte założenia oraz użyte narzędzia.
-[UZUPEŁNIJ OPIS CELU I ZAKRESU PROJEKTU.]
-
-\subsection{Założenia projektowe}
-\begin{itemize}
-    \item [Pierwsze założenie.]
-    \item [Drugie założenie.]
-    \item [Kolejne założenie.]
-\end{itemize}
-
-\subsection{Wykorzystane oprogramowanie}
-\begin{itemize}
-    \item [Narzędzie / środowisko 1.]
-    \item [Narzędzie / środowisko 2.]
-\end{itemize}
+Celem projektu jest modelowanie oraz implementacja bazy danych w modelu relacyjnym. Projekt składa
+się z trzech części: - modelu konceptualnego, modelu logicznego oraz implementacji fizycznej w
+silniku bazy danych Oracle XE. Baza danych modelowana jest w ramach zarządzania klubem
+lekkoatletycznym, jego sportowcami, ich trenerami, oraz przyrządami do ćwiczeń, informacją o
+lokalizacji poszczególnych przyrządów i kiedy są dostępne.
 
 % ============================================================
 % 2. DEFINICJA SYSTEMU
@@ -127,53 +118,38 @@
 \section{Definicja systemu}
 
 \subsection{Perspektywy użytkowników}
-Przedstaw główne role użytkowników systemu i zakres ich dostępu.
+Do głównych użytkowników naszego systemu przypisujemy następujące perspektywy:
 \begin{itemize}
-    \item \textbf{[Rola 1]} -- [opis uprawnień i zadań].
-    \item \textbf{[Rola 2]} -- [opis uprawnień i zadań].
-    \item \textbf{[Rola 3]} -- [opis uprawnień i zadań].
+    \item \textbf{Administrator} -- Pełny wgląd, modyfikacja list pracowników, stadionów i przyrządów.
+    \item \textbf{Trener} -- Wgląd w sportowców których trenuje oraz gdzie i kiedy odbywają się treningi.
+    \item \textbf{Sportowiec} -- Wgląd w swoich trenerów, gdzie i kiedy odbywają się treningi, a także zapis na kolejne treningi.
 \end{itemize}
 
 \subsection{Funkcjonalności zaimplementowanego systemu}
 
-\subsubsection{[Rola użytkownika 1]}
+\subsubsection{Administrator}
 \begin{itemize}
-    \item [Funkcjonalność.]
-    \item [Funkcjonalność.]
+    \item Dodawanie/modyfikacja/usuwanie oferowanych ćwiczeń.
+    \item Dodawanie/modyfikacja/usuwanie pracowników.
+    \item Dodawanie/modyfikacja/usuwanie przyrządów.
+    \item Dodawanie/modyfikacja/usuwanie sportowców.
+    \item Dodawanie/modyfikacja/usuwanie stadionów.
 \end{itemize}
 
-\subsubsection{[Rola użytkownika 2]}
+\subsubsection{Trener}
 \begin{itemize}
-    \item [Funkcjonalność.]
-    \item [Funkcjonalność.]
+    \item Podgląd swojego grafiku.
+    \item Dodawanie/modyfikacja stanu technicznego przyrządu.
 \end{itemize}
 
-\subsubsection{[Rola użytkownika 3]}
+\subsubsection{Sportowiec}
 \begin{itemize}
-    \item [Funkcjonalność.]
-    \item [Funkcjonalność.]
+    \item Podgląd swojego grafiku.
+    \item Dodawanie/modyfikacja stanu technicznego przyrządu.
+    \item Dodawanie do grafku (zapis na kolejne treningi).
 \end{itemize}
 
-\subsection{Macierz uprawnień}
-% W razie potrzeby dodaj lub usuń kolumny.
-\begin{table}[H]
-\centering
-\small
-\begin{tabularx}{\textwidth}{|X|C{2.0cm}|C{2.0cm}|C{2.0cm}|}
-\hline
-\textbf{Funkcjonalność} & \textbf{Rola 1} & \textbf{Rola 2} & \textbf{Rola 3} \\
-\hline
-[Przykładowa funkcja] & + & -- & + \\
-\hline
-[Przykładowa funkcja] & -- & + & + \\
-\hline
-[Przykładowa funkcja] & + & + & -- \\
-\hline
-\end{tabularx}
-\caption{Macierz uprawnień użytkowników}
-\label{tab:uprawnienia}
-\end{table}
-
+\clearpage
 % ============================================================
 % 3. MODEL KONCEPTUALNY
 % ============================================================
@@ -182,12 +158,17 @@ Przedstaw główne role użytkowników systemu i zakres ich dostępu.
 \subsection{Definicja zbiorów encji}
 Dla każdej encji opisz jej rolę w modelowanej dziedzinie.
 \begin{itemize}
-    \item \textbf{[Encja 1]} -- [opis encji].
-    \item \textbf{[Encja 2]} -- [opis encji].
-    \item \textbf{[Encja 3]} -- [opis encji].
+    \item \textbf{Klub} -- Główna encja, klub lekkoatletyczny.
+    \item \textbf{Pracownik} -- Osoba zatrudniona przez klub.
+    \item \textbf{Trener} -- Pracownik który jest trenerem.
+    \item \textbf{Cwiczenie} -- Ćwiczenie które jest oferowane przez klub.
+    \item \textbf{Stadion} -- Lokacja fizyczna gdzie odbywają się ćwiczenia.
+    \item \textbf{Sportowiec} -- Członek klubu, osoba która wykonuje ćwiczenia.
+    \item \textbf{Grafik} -- Grafik sesji treningowych.
+    \item \textbf{Przyrzad} -- Przyrząd do ćwiczeń.
 \end{itemize}
 
-\subsection{Związki między encjami i ich typy}
+\subsection{Ustalenie związków między encjami i ich typów}
 \begin{table}[H]
 \centering
 \small
@@ -195,36 +176,233 @@ Dla każdej encji opisz jej rolę w modelowanej dziedzinie.
 \hline
 \textbf{Relacja} & \textbf{Rodzaj} & \textbf{Opis} \\
 \hline
-[Encja A -- Encja B] & 1:N & [Opis związku i uczestnictwa.] \\
+Klub -- Pracownik & 1:N & Klub zatrudnia procowników \\
 \hline
-[Encja B -- Encja C] & M:N & [Opis związku i uczestnictwa.] \\
+Pracownik -- Trener & 1:1 & Dziedziczenie: pracownik może być trenerem. Dane trenera są
+rozszerzeniem danych pracownika. \\
 \hline
-[Encja C -- Encja D] & 1:1 & [Opis związku i uczestnictwa.] \\
+Cwiczenie -- Grafik & 1:N & Jakim ćwiczeniem jest dany wpis w grafiku. \\
+\hline
+Cwiczenie -- Sportowiec & M:N & Ćwiczenia które wykonuje sportowiec. \\
+\hline
+Cwiczenie -- Stadion & M:N & Ćwiczenia które odbywają się na danych stadionach. \\
+\hline
+Klub -- Cwiczenie & 1:N & Klub oferuje dane ćwiczenia. \\
+\hline
+Klub -- Pracownik & 1:N & Klub zatrudnia pracownika. \\
+\hline
+Klub -- Stadion & 1:N & Klub posiada stadion. \\
+\hline
+Pracownik -- Grafik & 1:N & Pracownik (który jest trenerem) jest przypisany do danej sesji treningowej w grafiku. \\
+\hline
+Pracownik -- Sportowiec & M:N & Pracownik (który jest trenerem) trenuje sportowca. \\
+\hline
+Pracownik -- Stadion & M:N & Pracownik (który jest trenerem) trenuje sportowców na danych stadionach. \\
+\hline
+Przyrzad -- Grafik & 1:N & Jaki przyrząd jest urzywany w danej sesji treningowej \\
+\hline
+Sportowiec -- Grafik & 1:N & Zapisy sportowca na sesje treningowe. \\
+\hline
+Stadion -- Grafik & 1:N & Na którym stadionie odbywa się konkretna sesja trningowa. \\
+\hline
+Stadion -- Sportowiec & M:N & Sportowiec chodzi na dany stadion. \\
 \hline
 \end{tabularx}
 \caption{Związki między encjami}
 \label{tab:zwiazki}
 \end{table}
 
-\subsection{Atrybuty i ich dziedziny}
+\subsection{Określenie atrybutów i ich dziedzin}
 % Skopiuj poniższą tabelę dla każdej encji.
-\subsubsection{[Nazwa encji]}
+\subsubsection{Klub}
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|L{3.0cm}|L{2.5cm}|C{2.0cm}|X|}
+\begin{tabularx}{\textwidth}{|L{3cm}|L{2.25cm}|C{2.67cm}|X|}
 \hline
 \textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
 \hline
-ID\_[encja] & Integer & tak & Unikalny identyfikator encji. \\
+ID\_klubu & Int & tak & Unikalny identyfikator encji. \\
 \hline
-[atrybut 2] & Varchar(50) & tak & [Opis atrybutu.] \\
+Nazwa & Varchar(50) & tak & Nazwa klubu. \\
 \hline
-[atrybut 3] & Date & nie & [Opis atrybutu.] \\
+Adres & Varchar(100) & tak & Adres siedziby klubu. Pole segmentowe zawierające miasto, ulicę,
+numer budynku, numer lokalu oraz adres pocztowy. \\
+\hline
+REGON & Varchar(14) & nie & Numer REOGON klubu. \\
+\hline
+Data\_zalozenia & Date & nie & Data założenia klubu. \\
 \hline
 \end{tabularx}
-\caption{Atrybuty encji [nazwa encji]}
-\label{tab:atrybuty-encja}
+\caption{Atrybuty encji Klub}
+\label{tab:atrybuty-encja-klub}
+\end{table}
+
+\subsubsection{Pracownik}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3cm}|L{2.25cm}|C{2.67cm}|X|}
+\hline
+\textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
+\hline
+ID\_pracownika & Int & tak & Unikalny identyfikator encji. \\
+\hline
+Imie & Varchar(50) & tak & Imię pracownika. \\
+\hline
+Nazwisko & Varchar(50) & tak & Nazwisko pracownika. \\
+\hline
+Stanowisko & Varchar(50) & tak & Nazwa stanowiska pracownika. \\
+\hline
+Data\_zatrudnienia & Date & tak & Data zatrudnienia pracownika. \\
+\hline
+Nr\_telefonu & Varchar(50) & nie & Numer telefonu pracownika. \\
+\hline
+\end{tabularx}
+\caption{Atrybuty encji Pracownik}
+\label{tab:atrybuty-encja-pracownik}
+\end{table}
+
+\subsubsection{Trener}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3cm}|L{2.25cm}|C{2.67cm}|X|}
+\hline
+\textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
+\hline
+Specjalizacja & Varchar(100) & tak & Dysycyplina sportowa w jakiej się specjalizuje. \\
+\hline
+Nr\_licencji & Varchar(14) & tak & Numer licencji Polskiego Związku Lekkiej Atletyki. \\
+\hline
+Waznosc\_licencji & Date & tak & Data ważności licencji. \\
+\hline
+Staz\_lat & Int & nie & Ilość lat stażu. \\
+\hline
+\end{tabularx}
+\caption{Atrybuty encji Trener}
+\label{tab:atrybuty-encja-trener}
+\end{table}
+
+\subsubsection{Cwiczenie}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3cm}|L{2.25cm}|C{2.67cm}|X|}
+\hline
+\textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
+\hline
+ID\_cwiczenia & Int & tak & Unikalny identyfikator encji. \\
+\hline
+Nazwa & Varchar(50) & tak & Nazwa dysycyplina sportowej. \\
+\hline
+Czas\_trwania\_min & Int & tak & Czas trwania sesji w minutach. \\
+\hline
+Poziom\_trudnosci & Int & tak & Poziom trudności ćwiczenia. \\
+\hline
+Liczba\_powtorzen & Int & nie & Liczba powtórzeń w sesji. \\
+\hline
+Opis & Text & nie & Opis ćwiczenia. \\
+\hline
+\end{tabularx}
+\caption{Atrybuty encji Cwiczenie}
+\label{tab:atrybuty-encja-cwiczenie}
+\end{table}
+
+\subsubsection{Stadion}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3cm}|L{2.25cm}|C{2.67cm}|X|}
+\hline
+\textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
+\hline
+ID\_stadionu & Int & tak & Unikalny identyfikator encji. \\
+\hline
+Nazwa & Varchar(50) & tak & Nazwa stadionu. \\
+\hline
+Adres & Varchar(100) & tak & Adres stadionu. Pole segmentowe zawierające miasto, ulicę,
+numer budynku, numer lokalu oraz adres pocztowy. \\
+\hline
+Typ\_obiektu & Varchar(50) & tak & Typ obiektu. \\
+\hline
+Nawierzchnia & Varchar(50) & tak & Rodzaj nawierzchni obecny w tym obiekcie. \\
+\hline
+Godziny\_otwarcia & Varchar(255) & nie & Pole złożone składające się z godzin otwarcia w
+poszczególnych dniach tygodnia. \\
+\hline
+\end{tabularx}
+\caption{Atrybuty encji Stadion}
+\label{tab:atrybuty-encja-stadion}
+\end{table}
+
+\subsubsection{Sportowiec}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3cm}|L{2.25cm}|C{2.67cm}|X|}
+\hline
+\textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
+\hline
+ID\_stadionu & Int & tak & Unikalny identyfikator encji. \\
+\hline
+Nazwa & Varchar(50) & tak & Nazwa stadionu. \\
+\hline
+Adres & Varchar(100) & tak & Adres stadionu. Pole segmentowe zawierające miasto, ulicę,
+numer budynku, numer lokalu oraz adres pocztowy. \\
+\hline
+Typ\_obiektu & Varchar(50) & tak & Typ obiektu. \\
+\hline
+Nawierzchnia & Varchar(50) & tak & Rodzaj nawierzchni obecny w tym obiekcie. \\
+\hline
+Godziny\_otwarcia & Varchar(255) & nie & Pole złożone składające się z godzin otwarcia w
+poszczególnych dniach tygodnia. \\
+\hline
+\end{tabularx}
+\caption{Atrybuty encji Sportowiec}
+\label{tab:atrybuty-encja-sportowiec}
+\end{table}
+
+\subsubsection{Grafik}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3cm}|L{2.25cm}|C{2.67cm}|X|}
+\hline
+\textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
+\hline
+Czas\_rozpoczecia & Date & tak & Data i godzina rozpoczęcia sesji. \\
+\hline
+Czas\_zakonczenia & Date & tak & Data i godzina zakończenia sesji. \\
+\hline
+\end{tabularx}
+\caption{Atrybuty encji Grafik}
+\label{tab:atrybuty-encja-grafik}
+\end{table}
+
+\subsubsection{Przyrzad}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|L{3cm}|L{2.25cm}|C{2.67cm}|X|}
+\hline
+\textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
+\hline
+ID\_przyrzadu & Int & tak & Unikalny identyfikator encji. \\
+\hline
+Rodzaj & Varchar(50) & tak & Rodzaj przyrządu. \\
+\hline
+Nazwa & Varchar(50) & tak & Nazwa przyrządu. \\
+\hline
+Wynajety & Bool & tak & Czy dany przyrząd jest wynajęty. \\
+\hline
+Stan\_techniczny & Varchar(50) & nie & Określenie stanu technicznego. \\
+\hline
+Data\_zakupu & Date & nie & Data zakupu przyrządu. \\
+\hline
+\end{tabularx}
+\caption{Atrybuty encji Przyrząd}
+\label{tab:atrybuty-encja-przyrzad}
 \end{table}
 
 \subsection{Dodatkowe reguły integralnościowe}
