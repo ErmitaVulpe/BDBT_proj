@@ -40,7 +40,7 @@
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-234" connectable="0" parent="Vazb2FVr64m180bY-yjH-158" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="Znajduje się" vertex="1">
           <mxGeometry relative="1" x="0.1062" as="geometry">
-            <mxPoint x="-7" as="offset" />
+            <mxPoint x="-7" y="-11" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-159" edge="1" parent="1" source="Vazb2FVr64m180bY-yjH-209" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;startArrow=ERzeroToMany;startFill=0;endArrow=ERzeroToMany;endFill=0;">
@@ -50,7 +50,7 @@
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-238" connectable="0" parent="Vazb2FVr64m180bY-yjH-159" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="Chodzi" vertex="1">
           <mxGeometry relative="1" x="0.0521" y="1" as="geometry">
-            <mxPoint as="offset" />
+            <mxPoint x="2" y="-11" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-165" edge="1" parent="1" source="Vazb2FVr64m180bY-yjH-209" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;defaultLabelBackgroundColor=page;entryX=0.5;entryY=1;entryDx=0;entryDy=0;startArrow=ERzeroToMany;startFill=0;endArrow=ERzeroToMany;endFill=0;" target="Vazb2FVr64m180bY-yjH-193">
@@ -65,7 +65,7 @@
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-166" connectable="0" parent="Vazb2FVr64m180bY-yjH-165" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="Wykonuje" vertex="1">
           <mxGeometry relative="1" x="-0.0316" y="1" as="geometry">
-            <mxPoint x="-25" y="-1" as="offset" />
+            <mxPoint x="-225" y="-11" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-167" edge="1" parent="1" source="Vazb2FVr64m180bY-yjH-193" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;startArrow=ERzeroToMany;startFill=0;endArrow=ERzeroToMany;endFill=0;" target="Vazb2FVr64m180bY-yjH-201">
@@ -79,11 +79,11 @@
         <mxCell id="Vazb2FVr64m180bY-yjH-169" edge="1" parent="1" source="Vazb2FVr64m180bY-yjH-181" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;endArrow=none;endFill=0;startArrow=none;startFill=0;" target="Vazb2FVr64m180bY-yjH-188">
           <mxGeometry relative="1" x="0.0075" as="geometry" />
         </mxCell>
-        <mxCell id="Vazb2FVr64m180bY-yjH-170" edge="1" parent="1" source="Vazb2FVr64m180bY-yjH-181" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.338;entryY=-0.013;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;startArrow=ERzeroToMany;startFill=0;endArrow=ERzeroToMany;endFill=0;entryPerimeter=0;" target="Vazb2FVr64m180bY-yjH-201">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="Vazb2FVr64m180bY-yjH-170" edge="1" parent="1" source="Vazb2FVr64m180bY-yjH-181" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.341;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;startArrow=ERzeroToMany;startFill=0;endArrow=ERzeroToMany;endFill=0;entryPerimeter=0;" target="Vazb2FVr64m180bY-yjH-201">
+          <mxGeometry relative="1" x="-0.0203" as="geometry" />
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-171" connectable="0" parent="Vazb2FVr64m180bY-yjH-170" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;rotation=90;" value="Pracują" vertex="1">
-          <mxGeometry relative="1" x="-0.0625" as="geometry">
+          <mxGeometry relative="1" x="-0.0758" as="geometry">
             <mxPoint x="10" as="offset" />
           </mxGeometry>
         </mxCell>
@@ -213,7 +213,7 @@
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-242" connectable="0" parent="Vazb2FVr64m180bY-yjH-241" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="Zapisał się" vertex="1">
           <mxGeometry relative="1" x="0.0807" as="geometry">
-            <mxPoint as="offset" />
+            <mxPoint x="-178" y="-10" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-209" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Sportowiec" vertex="1">
@@ -242,12 +242,16 @@
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-235" edge="1" parent="1" source="Vazb2FVr64m180bY-yjH-217" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;endArrow=ERmandOne;endFill=0;startArrow=ERzeroToMany;startFill=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.33;entryY=0.974;entryDx=0;entryDy=0;entryPerimeter=0;" target="Vazb2FVr64m180bY-yjH-207">
           <mxGeometry relative="1" x="0.0225" as="geometry">
+            <Array as="points">
+              <mxPoint x="322.5" y="530" />
+              <mxPoint x="422.7" y="530" />
+            </Array>
             <mxPoint x="420" y="500" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-236" connectable="0" parent="Vazb2FVr64m180bY-yjH-235" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="Odbywa się" vertex="1">
           <mxGeometry relative="1" x="0.0617" as="geometry">
-            <mxPoint x="-8" as="offset" />
+            <mxPoint x="-8" y="-10" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-217" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Grafik" vertex="1">
@@ -291,7 +295,7 @@
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-240" connectable="0" parent="Vazb2FVr64m180bY-yjH-239" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;" value="Korzysta z" vertex="1">
           <mxGeometry relative="1" x="-0.0055" y="-1" as="geometry">
-            <mxPoint x="1" as="offset" />
+            <mxPoint y="-10" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Vazb2FVr64m180bY-yjH-243" edge="1" parent="1" source="Vazb2FVr64m180bY-yjH-218" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.62;entryY=1.011;entryDx=0;entryDy=0;entryPerimeter=0;defaultLabelBackgroundColor=page;horizontal=0;endArrow=ERmandOne;endFill=0;startArrow=ERzeroToMany;startFill=0;" target="Vazb2FVr64m180bY-yjH-200">

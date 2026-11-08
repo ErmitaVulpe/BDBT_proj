@@ -25,11 +25,9 @@
               just
               (texliveMedium.withPackages (
                 ps: with ps; [
-                  placeins
-                  # vhistory
-                  # preprint
                   cleveref
                   enumitem
+                  placeins
                 ]
               ))
             ];

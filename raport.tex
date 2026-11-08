@@ -256,7 +256,7 @@ Stanowisko & Varchar(50) & tak & Nazwa stanowiska pracownika. \\
 \hline
 Data\_zatrudnienia & Date & tak & Data zatrudnienia pracownika. \\
 \hline
-Nr\_telefonu & Varchar(50) & nie & Numer telefonu pracownika. \\
+Nr\_telefonu & Char(9) & nie & Numer telefonu pracownika. \\
 \hline
 \end{tabularx}
 \caption{Atrybuty encji Pracownik}
@@ -273,7 +273,7 @@ Nr\_telefonu & Varchar(50) & nie & Numer telefonu pracownika. \\
 \hline
 Specjalizacja & Varchar(100) & tak & Dysycyplina sportowa w jakiej się specjalizuje. \\
 \hline
-Nr\_licencji & Varchar(14) & tak & Numer licencji Polskiego Związku Lekkiej Atletyki. \\
+Nr\_licencji & Char(14) & tak & Numer licencji Polskiego Związku Lekkiej Atletyki. \\
 \hline
 Waznosc\_licencji & Date & tak & Data ważności licencji. \\
 \hline
@@ -405,13 +405,20 @@ Data\_zakupu & Date & nie & Data zakupu przyrządu. \\
 \label{tab:atrybuty-encja-przyrzad}
 \end{table}
 
-\subsection{Dodatkowe reguły integralnościowe}
+\subsection{Dodatkowe reguły integralnościowe (reguły biznesowe)}
 \begin{itemize}
-    \item [Reguła biznesowa 1.]
-    \item [Reguła biznesowa 2.]
+    \item Pracownik może prowadzić treningi wyłącznie wtedy, gdy posiada odpowiednie kwalifikacje.
+    \item Pracownik nie może mieć daty zatrudnienia późniejszej niż aktualna data.
+    \item Pracownik może pracować na kilku stadionach należących do klubu, ale nie może prowadzić
+        dwóch zajęć w tym samym czasie.
+    \item Każdy trener musi posiadać ważną licencję trenerską.
+    \item Data ważności licencji trenera nie może być wcześniejsza niż data rozpoczęcia prowadzonych
+        przez niego zajęć.
+    \item Data rozpoczęcia treningu musi być wcześniejsza niż data jego zakończenia.
+    \item Sportowiec nie może zapisać się na dwa treningi odbywające się w tym samym czasie.
 \end{itemize}
 
-\subsection{Klucze kandydujące i główne}
+\subsection{Klucze kandydujące i główne (decyzje projektowe)}
 \begin{table}[H]
 \centering
 \small
@@ -419,9 +426,21 @@ Data\_zakupu & Date & nie & Data zakupu przyrządu. \\
 \hline
 \textbf{Nazwa encji} & \textbf{Klucz główny} & \textbf{Klucz kandydujący} \\
 \hline
-[Encja 1] & ID\_[encja 1] & [Atrybut / zestaw atrybutów] \\
+Klub & ID\_klubu & NIP, REGEON (jeżeli podany) \\
 \hline
-[Encja 2] & ID\_[encja 2] & [Atrybut / zestaw atrybutów] \\
+Pracownik & ID\_pracownika & -- \\
+\hline
+Trener & ID\_prcownika & Nr\_licencji \\
+\hline
+Cwiczenie & ID\_cwiczenia & -- \\
+\hline
+Stadion & ID\_stadionu & -- \\
+\hline
+Sportowiec & ID\_Sportowca & -- \\
+\hline
+Grafik & ID\_wpisu & -- \\
+\hline
+Przyrzad & ID\_Przyrzadu & -- \\
 \hline
 \end{tabularx}
 \caption{Klucze główne i kandydujące}
@@ -429,17 +448,12 @@ Data\_zakupu & Date & nie & Data zakupu przyrządu. \\
 \end{table}
 
 \subsection{Schemat ER na poziomie konceptualnym}
-% Umieść plik graficzny w folderze projektu, np. images/er_konceptualny.png.
-\IfFileExists{images/er_konceptualny.png}{%
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.62\textheight,keepaspectratio]{images/er_konceptualny.png}
+    \includegraphics[width=1\textwidth]{raport.t2d/model.pdf}
     \caption{Model konceptualny}
     \label{fig:er-konceptualny}
 \end{figure}
-}{%
-\noindent\textit{[Wstaw schemat ER w pliku graficznym model-konceptualny.]}
-}
 
 \subsection{Analiza pułapek szczelinowych i wachlarzowych}
 \subsubsection{Pułapka wachlarzowa}
