@@ -455,12 +455,21 @@ Przyrzad & ID\_Przyrzadu & -- \\
     \label{fig:er-konceptualny}
 \end{figure}
 
-\subsection{Analiza pułapek szczelinowych i wachlarzowych}
-\subsubsection{Pułapka wachlarzowa}
-[Wyjaśnij, czy i gdzie występuje problem. Dodaj przykład.]
-
+\subsection{Problem pułapek szczelinowych i wachlarzowych – analiza i przykłady}
 \subsubsection{Pułapka szczelinowa}
-[Wyjaśnij, czy i gdzie występuje problem. Dodaj przykład.]
+Może pojawić się w przypadku relacji pomiędzy encjami Klub, Pracownik i Stadion. Klub zatrudnia
+pracowników, którzy pracują na określonych stadionach, a jednocześnie klub posiada stadiony.
+Jeżeli nie każdy stadion ma przypisanego pracownika, wyszukiwanie stadionów za pośrednictwem
+tabeli Pracownik może zwrócić niekompletne wyniki. Bezpośrednia relacja między klubem a stadionem
+pozwala uzyskać pełniejsze informacje.
+
+\subsubsection{Pułapka wachlarzowa}
+może występować w przypadku encji Klub, która jest powiązana z encjami Pracownik oraz Ćwiczenie.
+Obie relacje mają charakter 1:N. Podczas jednoczesnego łączenia tych tabel może dojść do
+zwielokrotnienia wyników zapytania SQL. Przykładowo pracownicy mogą zostać połączeni ze wszystkimi
+ćwiczeniami oferowanymi przez dany klub, mimo że nie prowadzą wszystkich tych zajęć. Problem można
+rozwiązać przez odpowiednie odwzorowanie relacji między pracownikami a ćwiczeniami, np. za pomocą
+tabeli pośredniej.
 
 % ============================================================
 % 4. MODEL LOGICZNY
@@ -518,13 +527,25 @@ Przyrzad & ID\_Przyrzadu & -- \\
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|X|L{2.6cm}|L{2.1cm}|X|}
+\begin{tabularx}{\textwidth}{|L{5.4cm}|L{2.6cm}|L{2.3cm}|X|}
 \hline
 \textbf{Funkcjonalność} & \textbf{Uprawnienia} & \textbf{Wykonalność} & \textbf{Potrzebne zasoby} \\
 \hline
-[Operacja 1] & [Rola] & Wykonalne & [Tabele, relacje, widoki] \\
+Dodawanie/modyfikacja/usuwanie oferowanych ćwiczeń & Administrator & Wykonalne & Tabela Cwiczenie \\
 \hline
-[Operacja 2] & [Rola] & Wykonalne & [Tabele, relacje, widoki] \\
+Dodawanie/modyfikacja/usuwanie pracowników & Administrator & Wykonalne & Tabela Pracownik \\
+\hline
+Dodawanie/usuwanie przyrządów & Administrator & Wykonalne & Tablea Przyrzad \\
+\hline
+Modyfikacja przyrządów & Administrator, Trener, Sportowiec & Wykonalne & Tabela Przyrzad \\
+\hline
+Dodawanie/modyfikacja/usuwanie sportowców & Administrator & Wykonalne & Tabela Sportowiec \\
+\hline
+Dodawanie/modyfikacja/usuwanie stadionów & Administrator & Wykonalne & Tabela Stadion \\
+\hline
+Podgląd swojego grafiku & Trener, Sportowiec & Wykonalne & Tabela Grafik \\
+\hline
+Zapis na kolejne treningi & Sportowiec & Wykonalne & Tabela Grafik \\
 \hline
 \end{tabularx}
 \caption{Weryfikacja wykonalności transakcji}
@@ -532,11 +553,14 @@ Przyrzad & ID\_Przyrzadu & -- \\
 \end{table}
 
 \subsection{Strojenie bazy danych -- dobór indeksów}
-Dla każdego indeksu podaj tabelę, kolumnę oraz uzasadnienie jego zastosowania.
 \begin{lstlisting}
--- Opis: przyspieszenie wyszukiwania rekordow
-CREATE INDEX IX_nazwa_indeksu
-ON Nazwa_tabeli(nazwa_kolumny);
+TODO TODO add indexes for all foreign keys
+
+-- idx_grafik_czas_rozpoczecia: Przyspieszenie wyszukiwania bliskich cwiczen
+CREATE INDEX idx_grafik_czas_rozpoczecia ON Grafik(Czas_rozpoczecia);
+
+-- idx_przyrzad_stan_techniczny: Wyszukiwanie uszkodzonych sprzetow itd.
+CREATE INDEX idx_przyrzad_stan_techniczny ON Przyrzad(Stan_techniczny);
 \end{lstlisting}
 
 \subsection{Skrypt SQL zakładający bazę danych}
