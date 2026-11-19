@@ -21,6 +21,7 @@
         {
           devShells.default = pkgs.mkShell {
             buildInputs = with pkgs; [
+              dbeaver-bin
               drawio
               just
               (texliveMedium.withPackages (
