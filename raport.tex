@@ -176,8 +176,6 @@ Dla każdej encji opisz jej rolę w modelowanej dziedzinie.
 \hline
 \textbf{Relacja} & \textbf{Rodzaj} & \textbf{Opis} \\
 \hline
-Klub -- Pracownik & 1:N & Klub zatrudnia procowników \\
-\hline
 Pracownik -- Trener & 1:1 & Dziedziczenie: pracownik może być trenerem. Dane trenera są
 rozszerzeniem danych pracownika. \\
 \hline
@@ -197,13 +195,15 @@ Pracownik -- Grafik & 1:N & Pracownik (który jest trenerem) jest przypisany do 
 \hline
 Pracownik -- Sportowiec & M:N & Pracownik (który jest trenerem) trenuje sportowca. \\
 \hline
-Pracownik -- Stadion & M:N & Pracownik (który jest trenerem) trenuje sportowców na danych stadionach. \\
+Pracownik -- Stadion & M:N & Pracownik pracuje na danych stadionach. \\
 \hline
 Przyrzad -- Grafik & 1:N & Jaki przyrząd jest urzywany w danej sesji treningowej \\
 \hline
 Sportowiec -- Grafik & 1:N & Zapisy sportowca na sesje treningowe. \\
 \hline
 Stadion -- Grafik & 1:N & Na którym stadionie odbywa się konkretna sesja trningowa. \\
+\hline
+Stadion -- Przyrzad & 1:N & Na stadionie znajduje się wiele przyrządów, każdy przyrząd jest przypisany do jednego stadionu. \\
 \hline
 Stadion -- Sportowiec & M:N & Sportowiec chodzi na dany stadion. \\
 \hline
@@ -228,6 +228,8 @@ Nazwa & Varchar(50) & tak & Nazwa klubu. \\
 \hline
 Adres & Varchar(100) & tak & Adres siedziby klubu. Pole segmentowe zawierające miasto, ulicę,
 numer budynku, numer lokalu oraz adres pocztowy. \\
+\hline
+NIP & Char(10) & tak & Numer Identyfikacji Podatkowej klubu. \\
 \hline
 REGON & Varchar(14) & nie & Numer REOGON klubu. \\
 \hline
@@ -271,6 +273,8 @@ Nr\_telefonu & Char(9) & nie & Numer telefonu pracownika. \\
 \hline
 \textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
 \hline
+ID\_pracownika & Int & tak & Dziedziczony unikalny identyfikator pracownika. \\
+\hline
 Specjalizacja & Varchar(100) & tak & Dysycyplina sportowa w jakiej się specjalizuje. \\
 \hline
 Nr\_licencji & Char(14) & tak & Numer licencji Polskiego Związku Lekkiej Atletyki. \\
@@ -295,6 +299,8 @@ Staz\_lat & Int & nie & Ilość lat stażu. \\
 ID\_cwiczenia & Int & tak & Unikalny identyfikator encji. \\
 \hline
 Nazwa & Varchar(50) & tak & Nazwa dysycyplina sportowej. \\
+\hline
+Dyscyplina & Varchar(50) & tak & Dyscyplina sportowa ćwiczenia. \\
 \hline
 Czas\_trwania\_min & Int & tak & Czas trwania sesji w minutach. \\
 \hline
@@ -344,19 +350,19 @@ poszczególnych dniach tygodnia. \\
 \hline
 \textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
 \hline
-ID\_stadionu & Int & tak & Unikalny identyfikator encji. \\
+ID\_sportowca & Int & tak & Unikalny identyfikator encji. \\
 \hline
-Nazwa & Varchar(50) & tak & Nazwa stadionu. \\
+Imie & Varchar(50) & tak & Imię sportowca. \\
 \hline
-Adres & Varchar(100) & tak & Adres stadionu. Pole segmentowe zawierające miasto, ulicę,
-numer budynku, numer lokalu oraz adres pocztowy. \\
+Nazwisko & Varchar(50) & tak & Nazwisko sportowca. \\
 \hline
-Typ\_obiektu & Varchar(50) & tak & Typ obiektu. \\
+Data\_urodzenia & Date & tak & Data urodzenia sportowca. \\
 \hline
-Nawierzchnia & Varchar(50) & tak & Rodzaj nawierzchni obecny w tym obiekcie. \\
+Dyscyplina & Varchar(50) & tak & Dyscyplina sportowa uprawiana przez sportowca. \\
 \hline
-Godziny\_otwarcia & Varchar(255) & nie & Pole złożone składające się z godzin otwarcia w
-poszczególnych dniach tygodnia. \\
+Data\_dolaczenia & Date & tak & Data dołączenia sportowca do klubu. \\
+\hline
+Nr\_licencji & Char(14) & nie & Numer licencji sportowca. \\
 \hline
 \end{tabularx}
 \caption{Atrybuty encji Sportowiec}
@@ -370,6 +376,8 @@ poszczególnych dniach tygodnia. \\
 \begin{tabularx}{\textwidth}{|L{3cm}|L{2.25cm}|C{2.67cm}|X|}
 \hline
 \textbf{Atrybut} & \textbf{Typ} & \textbf{Obowiązkowy} & \textbf{Opis} \\
+\hline
+ID\_wpisu & Int & tak & Unikalny identyfikator encji. \\
 \hline
 Czas\_rozpoczecia & Date & tak & Data i godzina rozpoczęcia sesji. \\
 \hline
@@ -426,21 +434,21 @@ Data\_zakupu & Date & nie & Data zakupu przyrządu. \\
 \hline
 \textbf{Nazwa encji} & \textbf{Klucz główny} & \textbf{Klucz kandydujący} \\
 \hline
-Klub & ID\_klubu & NIP, REGEON (jeżeli podany) \\
+Klub & ID\_klubu & NIP, REGON (jeżeli podany) \\
 \hline
 Pracownik & ID\_pracownika & -- \\
 \hline
-Trener & ID\_prcownika & Nr\_licencji \\
+Trener & ID\_pracownika & Nr\_licencji \\
 \hline
 Cwiczenie & ID\_cwiczenia & -- \\
 \hline
 Stadion & ID\_stadionu & -- \\
 \hline
-Sportowiec & ID\_Sportowca & -- \\
+Sportowiec & ID\_sportowca & -- \\
 \hline
 Grafik & ID\_wpisu & -- \\
 \hline
-Przyrzad & ID\_Przyrzadu & -- \\
+Przyrzad & ID\_przyrzadu & -- \\
 \hline
 \end{tabularx}
 \caption{Klucze główne i kandydujące}
@@ -470,53 +478,66 @@ zwielokrotnienia wyników zapytania SQL. Przykładowo pracownicy mogą zostać p
 ćwiczeniami oferowanymi przez dany klub, mimo że nie prowadzą wszystkich tych zajęć. Problem można
 rozwiązać przez odpowiednie odwzorowanie relacji między pracownikami a ćwiczeniami, np. za pomocą
 tabeli pośredniej.
-
-% ============================================================
-% 4. MODEL LOGICZNY
-% ============================================================
 \section{Model logiczny}
 
+%############################################################################################
+%costam costam 4
+%############################################################################################
 \subsection{Charakterystyka modelu relacyjnego}
-[Opisz przejście od modelu konceptualnego do relacyjnego.]
+Model konceptualny zaimplementowano w środowisku DBeaver z wykorzystaniem silnika Oracle Database 23ai. Przekształcenie do modelu relacyjnego obejmowało:
+\begin{itemize}
+    \item zastąpienie wszystkich relacji wiele-do-wielu (N:N) parami relacji jeden-do-wielu (1:N) z tabelami pośredniczącymi,
+    \item realizację relacji 1:N poprzez przeniesienie klucza głównego tabeli nadrzędnej jako klucza obcego (\texttt{FOREIGN KEY}) do tabeli podrzędnej z zachowaniem opcjonalności (np. w \texttt{Grafik} kolumny \texttt{ID\_cwiczenia}, \texttt{ID\_stadionu} i \texttt{ID\_sportowca} są obowiązkowe, natomiast \texttt{ID\_pracownika} oraz \texttt{ID\_przyrzadu} opcjonalne),
+    \item mapowanie typów ogólnych na natywne typy silnika Oracle (\texttt{INTEGER}/\texttt{NUMBER(38,0)}, \texttt{VARCHAR2}, \texttt{CHAR}, \texttt{DATE}, \texttt{CLOB}, \texttt{NUMBER(1)}),
+    \item zdefiniowanie kluczy głównych (\texttt{PRIMARY KEY}), więzów integralności (\texttt{NOT NULL}, \texttt{UNIQUE}, \texttt{CHECK}) oraz indeksów na kluczach obcych.
+\end{itemize}
 
 \subsection{Zmiany właściwości niekompatybilnych z modelem relacyjnym}
 \begin{itemize}
-    \item [Opis zmiany pierwszej.]
-    \item [Opis zmiany drugiej.]
-    \item [Opis sposobu odwzorowania relacji M:N.]
+    \item \textbf{Dekompozycja atrybutów złożonych i wielowartościowych:} Pole segmentowe \texttt{Adres} w tabelach \texttt{Klub} i \texttt{Stadion} rozbito na kolumny atomowe: \texttt{Miasto}, \texttt{Ulica}, \texttt{Nr\_budynku}, \texttt{Nr\_lokalu} (opcjonalne) oraz \texttt{Kod\_pocztowy}. Złożone pole \texttt{Godziny\_otwarcia} z encji \texttt{Stadion} wydzielono do osobnej tabeli \texttt{Godziny\_otwarcia} (\texttt{Dzien\_tygodnia}, \texttt{Godzina\_otwarcia}, \texttt{Godzina\_zamkniecia}) w relacji 1:N ze \texttt{Stadion}.
+    \item \textbf{Usunięcie dziedziczenia:} Specjalizację \texttt{Pracownik}--\texttt{Trener} zastąpiono relacją identyfikującą 1:1, w której kluczem głównym i jednocześnie obcym (PFK) tabeli \texttt{Trener} jest \texttt{ID\_pracownika}.
+    \item \textbf{Odwzorowanie relacji N:N:} Pięć związków wiele-do-wielu rozbito na tabele pośredniczące ze złożonymi kluczami głównymi (PFK):
+    \begin{itemize}
+        \item \texttt{Pracownik\_Stadion} (\emph{Pracują}) -- przypisanie pracowników do obsługiwanych stadionów,
+        \item \texttt{Trener\_Sportowiec} (\emph{Trenuje}) -- powiązanie trenerów ze szkolonymi zawodnikami,
+        \item \texttt{Cwiczenie\_Stadion} (\emph{Odbywają się}) -- wskazanie stadionów, na których realizowane są ćwiczenia,
+        \item \texttt{Sportowiec\_Stadion} (\emph{Chodzi}) -- stadiony, na które uczęszczają sportowcy,
+        \item \texttt{Sportowiec\_Cwiczenie} (\emph{Wykonuje}) -- ćwiczenia wykonywane przez poszczególnych sportowców.
+    \end{itemize}
 \end{itemize}
 
 \subsection{Proces normalizacji -- analiza i przykłady}
-\subsubsection{Pierwsza postać normalna (1PN)}
-[Uzasadnij spełnienie warunków 1PN.]
-
-\subsubsection{Druga postać normalna (2PN)}
-[Uzasadnij spełnienie warunków 2PN.]
-
-\subsubsection{Trzecia postać normalna (3PN)}
-[Uzasadnij spełnienie warunków 3PN.]
+Normalizację przeprowadzono w celu ograniczenia redundancji danych oraz wyeliminowania anomalii wstawiania, aktualizacji i usuwania:
+\begin{itemize}
+    \item \textbf{Pierwsza postać normalna (1PN):} Wymaga atomowości atrybutów i braku grup powtarzalnych. Warunek spełniono przez rozbicie pola \texttt{Adres} na osobne kolumny, wydzielenie harmonogramu do tabeli \texttt{Godziny\_otwarcia} (jeden wiersz na dzień tygodnia obiektu) oraz zastąpienie relacji M:N tabelami pośredniczącymi.
+    \item \textbf{Druga postać normalna (2PN):} Wymaga spełnienia 1PN oraz pełnej zależności funkcyjnej atrybutów niekluczowych od całego klucza głównego. Wszystkie tabele główne posiadają proste, jednoatrybutowe klucze główne, natomiast pięć tabel pośredniczących ze złożonym kluczem głównym (np. \texttt{Pracownik\_Stadion}) składa się wyłącznie z atrybutów kluczowych, co wyklucza zależności częściowe.
+    \item \textbf{Trzecia postać normalna (3PN):} Wymaga spełnienia 2PN i braku zależności przechodnich między atrybutami niekluczowymi. Opisy obiektów przechowywane są wyłącznie w ich tabelach macierzystych -- np. \texttt{Grafik} odwołuje się do powiązanych encji wyłącznie przez klucze obce, a \texttt{Pracownik}, \texttt{Stadion} i \texttt{Cwiczenie} łączą się z \texttt{Klub} przez \texttt{ID\_klubu} bez powielania jego nazwy czy numeru \texttt{NIP}. Wydzielenie tabeli \texttt{Trener} eliminuje ponadto zależność atrybutów trenerskich od pola \texttt{Stanowisko}. Świadome odstępstwa od ścisłej 3PN omówiono w punkcie dotyczącym denormalizacji.
+\end{itemize}
 
 \subsection{Schemat ER na poziomie modelu logicznego}
-\IfFileExists{images/er_logiczny.png}{%
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth,height=0.68\textheight,keepaspectratio]{images/er_logiczny.png}
-    \caption{Schemat logiczny bazy danych}
-    \label{fig:er-logiczny}
+    \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{schemat_er.png}
+    \caption{Model ER na poziomie logicznym}
+    \label{fig:er-faktyczny}
 \end{figure}
-}{%
-\noindent\textit{[Wstaw schemat ER w pliku graficznym model-logiczny.]}
-}
 
 \subsection{Więzy integralności}
+Spójność danych zapewniono poprzez następujące mechanizmy na poziomie silnika Oracle:
 \begin{itemize}
-    \item \textbf{Integralność encji:} [opis kluczy głównych].
-    \item \textbf{Integralność referencyjna:} [opis kluczy obcych].
-    \item \textbf{Integralność domenowa:} [opis typów i ograniczeń].
+    \item \textbf{Integralność encji:} Każda z 14 tabel posiada klucz główny (\texttt{PRIMARY KEY}), gwarantujący unikalność rekordów i brak wartości \texttt{NULL}. W tabelach głównych zastosowano klucze sztuczne (np. \texttt{ID\_klubu}, \texttt{ID\_wpisu}), w \texttt{Trener} klucz dziedziczony \texttt{ID\_pracownika}, a w tabelach łączących złożone klucze główne (np. \texttt{(ID\_sportowca, ID\_cwiczenia)}) blokujące duplikaty powiązań.
+    \item \textbf{Integralność referencyjna:} Klucze obce (\texttt{FOREIGN KEY}) blokują wstawienie rekordu wskazującego na nieistniejący obiekt nadrzędny oraz usunięcie rekordu, do którego istnieją odwołania (np. nie można dodać wpisu w \texttt{Trener} bez odpowiadającego rekordu w \texttt{Pracownik} ani usunąć obiektu \texttt{Klub}, do którego przypisane są stadiony lub pracownicy).
+    \item \textbf{Integralność domenowa:} Dopasowano typy i rozmiary kolumn do charakteru danych (m.in. \texttt{VARCHAR2} dla napisów zmiennej długości, stałodługościowe \texttt{CHAR} dla \texttt{NIP}, \texttt{Nr\_telefonu}, \texttt{Kod\_pocztowy}, \texttt{Nr\_licencji} i godzin \texttt{HH:MM}, \texttt{DATE} dla dat i terminów zajęć, \texttt{CLOB} dla \texttt{Cwiczenie.Opis} oraz \texttt{NUMBER(1)} dla \texttt{Przyrzad.Wynajety} i \texttt{Godziny\_otwarcia.Dzien\_tygodnia}). Na pola obowiązkowe nałożono \texttt{NOT NULL}, a na klucze kandydujące ograniczenia \texttt{UNIQUE} (\texttt{Klub.NIP}, \texttt{Klub.REGON}, \texttt{Trener.Nr\_licencji} oraz para \texttt{(ID\_stadionu, Dzien\_tygodnia)}). Ograniczenia \texttt{CHECK} weryfikują m.in. \texttt{Czas\_zakonczenia > Czas\_rozpoczecia}, \texttt{Poziom\_trudnosci BETWEEN 1 AND 5}, \texttt{Czas\_trwania\_min > 0}, \texttt{Staz\_lat >= 0}, \texttt{Wynajety IN (0, 1)} oraz \texttt{Dzien\_tygodnia BETWEEN 1 AND 7}. Reguły wielowierszowe i zależne od bieżącej daty (brak kolizji w grafiku, ważność licencji w dniu zajęć, data zatrudnienia niepóźniejsza niż aktualna) realizowane są w fazie fizycznej wyzwalaczami (\texttt{TRIGGER}).
 \end{itemize}
 
 \subsection{Proces denormalizacji -- analiza i przykłady}
-[Opisz rozważone przypadki denormalizacji oraz uzasadnij decyzje.]
+Denormalizacja polega na świadomym wprowadzeniu kontrolowanej nadmiarowości w celu ograniczenia liczby złączeń (\texttt{JOIN}) i przyspieszenia odczytów kosztem złożoności modyfikacji. W projekcie rozważono następujące przypadki:
+\begin{itemize}
+    \item \textbf{Brak tabeli słownikowej dla dyscyplin (Zastosowano):} Atrybut \texttt{Dyscyplina} pozostawiono bezpośrednio w tabelach \texttt{Cwiczenie} i \texttt{Sportowiec} (analogicznie \texttt{Specjalizacja} w \texttt{Trener}). Przy niewielkiej, stabilnej liczbie dyscyplin lekkoatletycznych upraszcza to zapytania filtrujące bez zbędnych złączeń.
+    \item \textbf{Brak słownika kodów pocztowych (Zastosowano):} Zależność \texttt{Kod\_pocztowy} $\rightarrow$ \texttt{Miasto} formalnie narusza rygorystyczną 3PN, jednak przy małej liczbie obiektów klubu i stadionów utrzymywanie osobnej tabeli słownikowej wprowadzałoby nieuzasadniony narzut operacji \texttt{JOIN} przy każdym odczycie adresu.
+    \item \textbf{Powielanie danych opisowych w tabeli \texttt{Grafik} (Odrzucono):} Rozważano kopiowanie nazwy ćwiczenia, stadionu lub nazwiska trenera do \texttt{Grafik} dla szybszego generowania harmonogramu. Zrezygnowano z tego rozwiązania ze względu na wysokie ryzyko anomalii aktualizacji przy zmianie danych obiektu lub trenera.
+    \item \textbf{Przechowywanie godzin otwarcia jako pojedynczego napisu (Odrzucono):} Zrezygnowanie z tabeli \texttt{Godziny\_otwarcia} na rzecz jednej kolumny tekstowej w \texttt{Stadion} uprościłoby schemat, ale uniemożliwiło automatyczną walidację terminów zajęć oraz wyszukiwanie obiektów otwartych o danej porze.
+\end{itemize}
 
 % ============================================================
 % 5. FAZA FIZYCZNA
