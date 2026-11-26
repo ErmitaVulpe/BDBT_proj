@@ -48,7 +48,26 @@
     frame=single,
     rulecolor=\color{black!25},
     tabsize=4,
-    captionpos=b
+    captionpos=b,
+    extendedchars=true,
+    literate={ą}{{\k{a}}}1
+             {ć}{{\'c}}1
+             {ę}{{\k{e}}}1
+             {ł}{{\l{}}}1
+             {ń}{{\'n}}1
+             {ó}{{\'o}}1
+             {ś}{{\'s}}1
+             {ź}{{\'z}}1
+             {ż}{{\.z}}1
+             {Ą}{{\k{A}}}1
+             {Ć}{{\'C}}1
+             {Ę}{{\k{E}}}1
+             {Ł}{{\L{}}}1
+             {Ń}{{\'N}}1
+             {Ó}{{\'O}}1
+             {Ś}{{\'S}}1
+             {Ź}{{\'Z}}1
+             {Ż}{{\.Z}}1
 }
 \lstset{style=sqlstyle}
 
@@ -104,8 +123,6 @@
 % 1. WPROWADZENIE
 % ============================================================
 \section{Zakres i cel projektu}
-% Opisz problem, cel projektu, zakres modelowanej dziedziny,
-% przyjęte założenia oraz użyte narzędzia.
 Celem projektu jest modelowanie oraz implementacja bazy danych w modelu relacyjnym. Projekt składa
 się z trzech części: - modelu konceptualnego, modelu logicznego oraz implementacji fizycznej w
 silniku bazy danych Oracle XE. Baza danych modelowana jest w ramach zarządzania klubem
@@ -156,7 +173,6 @@ Do głównych użytkowników naszego systemu przypisujemy następujące perspekt
 \section{Model konceptualny}
 
 \subsection{Definicja zbiorów encji}
-Dla każdej encji opisz jej rolę w modelowanej dziedzinie.
 \begin{itemize}
     \item \textbf{Klub} -- Główna encja, klub lekkoatletyczny.
     \item \textbf{Pracownik} -- Osoba zatrudniona przez klub.
@@ -213,7 +229,6 @@ Stadion -- Sportowiec & M:N & Sportowiec chodzi na dany stadion. \\
 \end{table}
 
 \subsection{Określenie atrybutów i ich dziedzin}
-% Skopiuj poniższą tabelę dla każdej encji.
 \subsubsection{Klub}
 \begin{table}[H]
 \centering
@@ -478,11 +493,12 @@ zwielokrotnienia wyników zapytania SQL. Przykładowo pracownicy mogą zostać p
 ćwiczeniami oferowanymi przez dany klub, mimo że nie prowadzą wszystkich tych zajęć. Problem można
 rozwiązać przez odpowiednie odwzorowanie relacji między pracownikami a ćwiczeniami, np. za pomocą
 tabeli pośredniej.
+
+% ============================================================
+% 4. MODEL LOGICZNY
+% ============================================================
 \section{Model logiczny}
 
-%############################################################################################
-%costam costam 4
-%############################################################################################
 \subsection{Charakterystyka modelu relacyjnego}
 Model konceptualny zaimplementowano w środowisku DBeaver z wykorzystaniem silnika Oracle Database 23ai. Przekształcenie do modelu relacyjnego obejmowało:
 \begin{itemize}
@@ -539,34 +555,43 @@ Denormalizacja polega na świadomym wprowadzeniu kontrolowanej nadmiarowości w 
     \item \textbf{Przechowywanie godzin otwarcia jako pojedynczego napisu (Odrzucono):} Zrezygnowanie z tabeli \texttt{Godziny\_otwarcia} na rzecz jednej kolumny tekstowej w \texttt{Stadion} uprościłoby schemat, ale uniemożliwiło automatyczną walidację terminów zajęć oraz wyszukiwanie obiektów otwartych o danej porze.
 \end{itemize}
 
+\clearpage
 % ============================================================
 % 5. FAZA FIZYCZNA
 % ============================================================
 \section{Faza fizyczna}
 
 \subsection{Projekt transakcji i weryfikacja ich wykonalności}
+Na podstawie zdefiniowanych perspektyw użytkowników oraz wymagań funkcjonalnych systemu zweryfikowano wykonalność operacji bazodanowych w oparciu o zaprojektowany schemat logiczny i fizyczny. Zestawienie transakcji wraz z wymaganymi uprawnieniami i zasobami przedstawiono w \cref{tab:transakcje}.
+
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|L{5.4cm}|L{2.6cm}|L{2.3cm}|X|}
+\begin{tabularx}{\textwidth}{|L{4.6cm}|L{2.5cm}|C{2.1cm}|X|}
 \hline
 \textbf{Funkcjonalność} & \textbf{Uprawnienia} & \textbf{Wykonalność} & \textbf{Potrzebne zasoby} \\
 \hline
-Dodawanie/modyfikacja/usuwanie oferowanych ćwiczeń & Administrator & Wykonalne & Tabela Cwiczenie \\
+Zarządzanie danymi klubu & Administrator & Wykonalne & Tabela Klub \\
 \hline
-Dodawanie/modyfikacja/usuwanie pracowników & Administrator & Wykonalne & Tabela Pracownik \\
+Dodawanie/modyfikacja/usuwanie oferowanych ćwiczeń & Administrator & Wykonalne & Tabele Cwiczenie, Cwiczenie\_Stadion \\
 \hline
-Dodawanie/usuwanie przyrządów & Administrator & Wykonalne & Tablea Przyrzad \\
+Dodawanie/modyfikacja/usuwanie pracowników i trenerów & Administrator & Wykonalne & Tabele Pracownik, Trener, Pracownik\_Stadion \\
 \hline
-Modyfikacja przyrządów & Administrator, Trener, Sportowiec & Wykonalne & Tabela Przyrzad \\
+Dodawanie/usuwanie przyrządów & Administrator & Wykonalne & Tabele Przyrzad, Stadion \\
 \hline
-Dodawanie/modyfikacja/usuwanie sportowców & Administrator & Wykonalne & Tabela Sportowiec \\
+Modyfikacja stanu technicznego przyrządu & Administrator, Trener, Sportowiec & Wykonalne & Tabela Przyrzad (pole Stan\_techniczny) \\
 \hline
-Dodawanie/modyfikacja/usuwanie stadionów & Administrator & Wykonalne & Tabela Stadion \\
+Dodawanie/modyfikacja/usuwanie sportowców & Administrator & Wykonalne & Tabele Sportowiec, Trener\_Sportowiec, Sportowiec\_Stadion, Sportowiec\_Cwiczenie \\
 \hline
-Podgląd swojego grafiku & Trener, Sportowiec & Wykonalne & Tabela Grafik \\
+Dodawanie/modyfikacja/usuwanie stadionów i godzin otwarcia & Administrator & Wykonalne & Tabele Stadion, Godziny\_otwarcia \\
 \hline
-Zapis na kolejne treningi & Sportowiec & Wykonalne & Tabela Grafik \\
+Podgląd swojego grafiku & Trener, Sportowiec & Wykonalne & Tabele Grafik, Cwiczenie, Stadion, Pracownik, Trener, Sportowiec, Przyrzad \\
+\hline
+Podgląd trenowanych sportowców & Trener & Wykonalne & Tabele Trener\_Sportowiec, Sportowiec \\
+\hline
+Podgląd przypisanych trenerów & Sportowiec & Wykonalne & Tabele Trener\_Sportowiec, Trener, Pracownik \\
+\hline
+Zapis na kolejne treningi & Sportowiec & Wykonalne & Tabele Grafik, Cwiczenie, Stadion, Przyrzad \\
 \hline
 \end{tabularx}
 \caption{Weryfikacja wykonalności transakcji}
@@ -574,54 +599,330 @@ Zapis na kolejne treningi & Sportowiec & Wykonalne & Tabela Grafik \\
 \end{table}
 
 \subsection{Strojenie bazy danych -- dobór indeksów}
-\begin{lstlisting}
-TODO TODO add indexes for all foreign keys
+W silniku Oracle Database klucze główne (\texttt{PRIMARY KEY}) oraz ograniczenia unikalności (\texttt{UNIQUE}) są indeksowane automatycznie, natomiast kolumny kluczy obcych (\texttt{FOREIGN KEY}) nie otrzymują indeksów domyślnie. W celu przyspieszenia złączeń między tabelami oraz uniknięcia blokad podczas modyfikacji rekordów nadrzędnych utworzono indeksy na wszystkich kluczach obcych tabel głównych, a także dodatkowe indeksy na kolumnach często wykorzystywanych w warunkach filtrujących (\texttt{Grafik.Czas\_rozpoczecia} oraz \texttt{Przyrzad.Stan\_techniczny}).
 
--- idx_grafik_czas_rozpoczecia: Przyspieszenie wyszukiwania bliskich cwiczen
-CREATE INDEX idx_grafik_czas_rozpoczecia ON Grafik(Czas_rozpoczecia);
+\paragraph{Pracownik}
+\begin{itemize}
+    \item \texttt{ix\_pracownik\_klub} -- przyspieszenie wyszukiwania pracowników zatrudnionych w danym klubie.\\
+    \texttt{CREATE INDEX ix\_pracownik\_klub ON Pracownik (ID\_klubu);}
+\end{itemize}
 
--- idx_przyrzad_stan_techniczny: Wyszukiwanie uszkodzonych sprzetow itd.
-CREATE INDEX idx_przyrzad_stan_techniczny ON Przyrzad(Stan_techniczny);
-\end{lstlisting}
+\paragraph{Stadion}
+\begin{itemize}
+    \item \texttt{ix\_stadion\_klub} -- przyspieszenie wyszukiwania stadionów należących do określonego klubu.\\
+    \texttt{CREATE INDEX ix\_stadion\_klub ON Stadion (ID\_klubu);}
+\end{itemize}
 
+\paragraph{Godziny\_otwarcia}
+\begin{itemize}
+    \item \texttt{ix\_godziny\_stadion} -- szybkie pobieranie harmonogramu otwarcia dla wybranego stadionu.\\
+    \texttt{CREATE INDEX ix\_godziny\_stadion ON Godziny\_otwarcia (ID\_stadionu);}
+\end{itemize}
+
+\paragraph{Cwiczenie}
+\begin{itemize}
+    \item \texttt{ix\_cwiczenie\_klub} -- przyspieszenie wyszukiwania oferty ćwiczeń prowadzonych przez dany klub.\\
+    \texttt{CREATE INDEX ix\_cwiczenie\_klub ON Cwiczenie (ID\_klubu);}
+\end{itemize}
+
+\paragraph{Przyrzad}
+\begin{itemize}
+    \item \texttt{ix\_przyrzad\_stadion} -- szybkie określenie przyrządów dostępnych na wybranym stadionie.\\
+    \texttt{CREATE INDEX ix\_przyrzad\_stadion ON Przyrzad (ID\_stadionu);}
+    \item \texttt{ix\_przyrzad\_stan\_techniczny} -- przyspieszenie wyszukiwania przyrządów uszkodzonych lub wymagających konserwacji.\\
+    \texttt{CREATE INDEX ix\_przyrzad\_stan\_techniczny ON Przyrzad (Stan\_techniczny);}
+\end{itemize}
+
+\paragraph{Grafik}
+\begin{itemize}
+    \item \texttt{ix\_grafik\_cwiczenie} -- przyspieszenie filtrowania wpisów w grafiku według rodzaju ćwiczenia.\\
+    \texttt{CREATE INDEX ix\_grafik\_cwiczenie ON Grafik (ID\_cwiczenia);}
+    \item \texttt{ix\_grafik\_stadion} -- szybkie sprawdzanie obłożenia wybranego stadionu.\\
+    \texttt{CREATE INDEX ix\_grafik\_stadion ON Grafik (ID\_stadionu);}
+    \item \texttt{ix\_grafik\_sport} -- przyspieszenie generowania indywidualnego harmonogramu sportowca.\\
+    \texttt{CREATE INDEX ix\_grafik\_sport ON Grafik (ID\_sportowca);}
+    \item \texttt{ix\_grafik\_trener} -- przyspieszenie podglądu grafiku zajęć prowadzonych przez trenera.\\
+    \texttt{CREATE INDEX ix\_grafik\_trener ON Grafik (ID\_pracownika);}
+    \item \texttt{ix\_grafik\_przyrzad} -- szybka weryfikacja rezerwacji konkretnego przyrządu w sesjach treningowych.\\
+    \texttt{CREATE INDEX ix\_grafik\_przyrzad ON Grafik (ID\_przyrzadu);}
+    \item \texttt{ix\_grafik\_czas\_rozpoczecia} -- przyspieszenie wyszukiwania nadchodzących treningów oraz sortowania grafiku chronologicznie.\\
+    \texttt{CREATE INDEX ix\_grafik\_czas\_rozpoczecia ON Grafik (Czas\_rozpoczecia);}
+\end{itemize}
+
+\clearpage
 \subsection{Skrypt SQL zakładający bazę danych}
-% Dłuższy skrypt można dołączyć jako osobny plik:
-% \lstinputlisting[caption={Skrypt tworzący bazę danych}]{sql/create_database.sql}
-\begin{lstlisting}[caption={Przykładowa definicja tabeli}]
-CREATE TABLE Przykladowa_tabela (
-    id          NUMBER PRIMARY KEY,
-    nazwa       VARCHAR2(100) NOT NULL,
-    data_utw    DATE
+Poniżej zamieszczono pełny skrypt DDL dla silnika Oracle Database 23ai, obejmujący usunięcie ewentualnych istniejących tabel, utworzenie 9 tabel głównych i 5 tabel pośredniczących wraz z więzami integralności oraz definicję indeksów.
+
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize, caption={Skrypt SQL tworzący strukturę bazy danych}]
+-- Usunięcie istniejących tabel
+DROP TABLE IF EXISTS Sportowiec_Cwiczenie CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Sportowiec_Stadion   CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Cwiczenie_Stadion    CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Trener_Sportowiec    CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Pracownik_Stadion    CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Grafik               CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Przyrzad             CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Godziny_otwarcia     CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Sportowiec           CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Cwiczenie            CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Stadion              CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Trener               CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Pracownik            CASCADE CONSTRAINTS PURGE;
+DROP TABLE IF EXISTS Klub                 CASCADE CONSTRAINTS PURGE;
+
+-- Tabele główne
+CREATE TABLE Klub (
+    ID_klubu       INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    Nazwa          VARCHAR2(50) NOT NULL,
+    Miasto         VARCHAR2(50) NOT NULL,
+    Ulica          VARCHAR2(50) NOT NULL,
+    Nr_budynku     VARCHAR2(10) NOT NULL,
+    Nr_lokalu      VARCHAR2(10),
+    Kod_pocztowy   CHAR(6)      NOT NULL,
+    NIP            CHAR(10)     NOT NULL,
+    REGON          VARCHAR2(14),
+    Data_zalozenia DATE,
+    CONSTRAINT pk_klub       PRIMARY KEY (ID_klubu),
+    CONSTRAINT uq_klub_nip   UNIQUE (NIP),
+    CONSTRAINT uq_klub_regon UNIQUE (REGON)
 );
+
+CREATE TABLE Pracownik (
+    ID_pracownika     INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    Imie              VARCHAR2(50) NOT NULL,
+    Nazwisko          VARCHAR2(50) NOT NULL,
+    Stanowisko        VARCHAR2(50) NOT NULL,
+    Data_zatrudnienia DATE         NOT NULL,
+    Nr_telefonu       CHAR(9),
+    ID_klubu          INTEGER      NOT NULL,
+    CONSTRAINT pk_pracownik      PRIMARY KEY (ID_pracownika),
+    CONSTRAINT fk_pracownik_klub FOREIGN KEY (ID_klubu) REFERENCES Klub (ID_klubu)
+);
+
+CREATE TABLE Trener (
+    ID_pracownika    INTEGER       NOT NULL,
+    Specjalizacja    VARCHAR2(100) NOT NULL,
+    Nr_licencji      CHAR(14)      NOT NULL,
+    Waznosc_licencji DATE          NOT NULL,
+    Staz_lat         INTEGER,
+    CONSTRAINT pk_trener           PRIMARY KEY (ID_pracownika),
+    CONSTRAINT fk_trener_pracownik FOREIGN KEY (ID_pracownika) REFERENCES Pracownik (ID_pracownika),
+    CONSTRAINT uq_trener_licencja  UNIQUE (Nr_licencji),
+    CONSTRAINT chk_trener_staz     CHECK (Staz_lat >= 0)
+);
+
+CREATE TABLE Stadion (
+    ID_stadionu  INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    Nazwa        VARCHAR2(50) NOT NULL,
+    Miasto       VARCHAR2(50) NOT NULL,
+    Ulica        VARCHAR2(50) NOT NULL,
+    Nr_budynku   VARCHAR2(10) NOT NULL,
+    Nr_lokalu    VARCHAR2(10),
+    Kod_pocztowy CHAR(6)      NOT NULL,
+    Typ_obiektu  VARCHAR2(50) NOT NULL,
+    Nawierzchnia VARCHAR2(50) NOT NULL,
+    ID_klubu     INTEGER      NOT NULL,
+    CONSTRAINT pk_stadion      PRIMARY KEY (ID_stadionu),
+    CONSTRAINT fk_stadion_klub FOREIGN KEY (ID_klubu) REFERENCES Klub (ID_klubu)
+);
+
+-- Godziny otwarcia wydzielone z tabeli Stadion
+CREATE TABLE Godziny_otwarcia (
+    ID_godzin          INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    ID_stadionu        INTEGER   NOT NULL,
+    Dzien_tygodnia     NUMBER(1) NOT NULL,
+    Godzina_otwarcia   CHAR(5)   NOT NULL,
+    Godzina_zamkniecia CHAR(5)   NOT NULL,
+    CONSTRAINT pk_godziny         PRIMARY KEY (ID_godzin),
+    CONSTRAINT fk_godziny_stadion FOREIGN KEY (ID_stadionu) REFERENCES Stadion (ID_stadionu),
+    CONSTRAINT uq_godziny_dzien   UNIQUE (ID_stadionu, Dzien_tygodnia),
+    CONSTRAINT chk_godziny_dzien  CHECK (Dzien_tygodnia BETWEEN 1 AND 7)
+);
+
+CREATE TABLE Cwiczenie (
+    ID_cwiczenia     INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    Nazwa            VARCHAR2(50) NOT NULL,
+    Dyscyplina       VARCHAR2(50) NOT NULL,
+    Czas_trwania_min INTEGER      NOT NULL,
+    Poziom_trudnosci INTEGER      NOT NULL,
+    Liczba_powtorzen INTEGER,
+    Opis             CLOB,
+    ID_klubu         INTEGER      NOT NULL,
+    CONSTRAINT pk_cwiczenie      PRIMARY KEY (ID_cwiczenia),
+    CONSTRAINT fk_cwiczenie_klub FOREIGN KEY (ID_klubu) REFERENCES Klub (ID_klubu),
+    CONSTRAINT chk_cwic_czas     CHECK (Czas_trwania_min > 0),
+    CONSTRAINT chk_cwic_poziom   CHECK (Poziom_trudnosci BETWEEN 1 AND 5),
+    CONSTRAINT chk_cwic_powt     CHECK (Liczba_powtorzen > 0)
+);
+
+CREATE TABLE Sportowiec (
+    ID_sportowca    INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    Imie            VARCHAR2(50) NOT NULL,
+    Nazwisko        VARCHAR2(50) NOT NULL,
+    Data_urodzenia  DATE         NOT NULL,
+    Dyscyplina      VARCHAR2(50) NOT NULL,
+    Data_dolaczenia DATE         NOT NULL,
+    Nr_licencji     CHAR(14),
+    CONSTRAINT pk_sportowiec PRIMARY KEY (ID_sportowca)
+);
+
+CREATE TABLE Przyrzad (
+    ID_przyrzadu    INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    Rodzaj          VARCHAR2(50) NOT NULL,
+    Nazwa           VARCHAR2(50) NOT NULL,
+    Wynajety        NUMBER(1)    DEFAULT 0 NOT NULL,
+    Stan_techniczny VARCHAR2(50),
+    Data_zakupu     DATE,
+    ID_stadionu     INTEGER      NOT NULL,
+    CONSTRAINT pk_przyrzad           PRIMARY KEY (ID_przyrzadu),
+    CONSTRAINT fk_przyrzad_stadion   FOREIGN KEY (ID_stadionu) REFERENCES Stadion (ID_stadionu),
+    CONSTRAINT chk_przyrzad_wynajety CHECK (Wynajety IN (0, 1))
+);
+
+CREATE TABLE Grafik (
+    ID_wpisu         INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    Czas_rozpoczecia DATE    NOT NULL,
+    Czas_zakonczenia DATE    NOT NULL,
+    ID_cwiczenia     INTEGER NOT NULL,
+    ID_stadionu      INTEGER NOT NULL,
+    ID_sportowca     INTEGER NOT NULL,
+    ID_pracownika    INTEGER,
+    ID_przyrzadu     INTEGER,
+    CONSTRAINT pk_grafik            PRIMARY KEY (ID_wpisu),
+    CONSTRAINT fk_grafik_cwiczenie  FOREIGN KEY (ID_cwiczenia)  REFERENCES Cwiczenie (ID_cwiczenia),
+    CONSTRAINT fk_grafik_stadion    FOREIGN KEY (ID_stadionu)   REFERENCES Stadion (ID_stadionu),
+    CONSTRAINT fk_grafik_sportowiec FOREIGN KEY (ID_sportowca)  REFERENCES Sportowiec (ID_sportowca),
+    CONSTRAINT fk_grafik_trener     FOREIGN KEY (ID_pracownika) REFERENCES Trener (ID_pracownika),
+    CONSTRAINT fk_grafik_przyrzad   FOREIGN KEY (ID_przyrzadu)  REFERENCES Przyrzad (ID_przyrzadu),
+    CONSTRAINT chk_grafik_czas      CHECK (Czas_zakonczenia > Czas_rozpoczecia)
+);
+
+-- Tabele pośrednie dla relacji N:N
+CREATE TABLE Pracownik_Stadion (
+    ID_pracownika INTEGER NOT NULL,
+    ID_stadionu   INTEGER NOT NULL,
+    CONSTRAINT pk_prac_stadion PRIMARY KEY (ID_pracownika, ID_stadionu),
+    CONSTRAINT fk_ps_pracownik FOREIGN KEY (ID_pracownika) REFERENCES Pracownik (ID_pracownika),
+    CONSTRAINT fk_ps_stadion   FOREIGN KEY (ID_stadionu)   REFERENCES Stadion (ID_stadionu)
+);
+
+CREATE TABLE Trener_Sportowiec (
+    ID_pracownika INTEGER NOT NULL,
+    ID_sportowca  INTEGER NOT NULL,
+    CONSTRAINT pk_tren_sport    PRIMARY KEY (ID_pracownika, ID_sportowca),
+    CONSTRAINT fk_ts_trener     FOREIGN KEY (ID_pracownika) REFERENCES Trener (ID_pracownika),
+    CONSTRAINT fk_ts_sportowiec FOREIGN KEY (ID_sportowca)  REFERENCES Sportowiec (ID_sportowca)
+);
+
+CREATE TABLE Cwiczenie_Stadion (
+    ID_cwiczenia INTEGER NOT NULL,
+    ID_stadionu  INTEGER NOT NULL,
+    CONSTRAINT pk_cwic_stadion PRIMARY KEY (ID_cwiczenia, ID_stadionu),
+    CONSTRAINT fk_cs_cwiczenie FOREIGN KEY (ID_cwiczenia) REFERENCES Cwiczenie (ID_cwiczenia),
+    CONSTRAINT fk_cs_stadion   FOREIGN KEY (ID_stadionu)  REFERENCES Stadion (ID_stadionu)
+);
+
+CREATE TABLE Sportowiec_Stadion (
+    ID_sportowca INTEGER NOT NULL,
+    ID_stadionu  INTEGER NOT NULL,
+    CONSTRAINT pk_sport_stadion PRIMARY KEY (ID_sportowca, ID_stadionu),
+    CONSTRAINT fk_ss_sportowiec FOREIGN KEY (ID_sportowca) REFERENCES Sportowiec (ID_sportowca),
+    CONSTRAINT fk_ss_stadion    FOREIGN KEY (ID_stadionu)  REFERENCES Stadion (ID_stadionu)
+);
+
+CREATE TABLE Sportowiec_Cwiczenie (
+    ID_sportowca INTEGER NOT NULL,
+    ID_cwiczenia INTEGER NOT NULL,
+    CONSTRAINT pk_sport_cwic    PRIMARY KEY (ID_sportowca, ID_cwiczenia),
+    CONSTRAINT fk_sc_sportowiec FOREIGN KEY (ID_sportowca) REFERENCES Sportowiec (ID_sportowca),
+    CONSTRAINT fk_sc_cwiczenie  FOREIGN KEY (ID_cwiczenia) REFERENCES Cwiczenie (ID_cwiczenia)
+);
+
+-- Indeksy na kluczach obcych i kolumnach filtrujących
+CREATE INDEX ix_pracownik_klub          ON Pracownik (ID_klubu);
+CREATE INDEX ix_stadion_klub            ON Stadion (ID_klubu);
+CREATE INDEX ix_godziny_stadion         ON Godziny_otwarcia (ID_stadionu);
+CREATE INDEX ix_cwiczenie_klub          ON Cwiczenie (ID_klubu);
+CREATE INDEX ix_przyrzad_stadion        ON Przyrzad (ID_stadionu);
+CREATE INDEX ix_przyrzad_stan_techniczny ON Przyrzad (Stan_techniczny);
+CREATE INDEX ix_grafik_cwiczenie        ON Grafik (ID_cwiczenia);
+CREATE INDEX ix_grafik_stadion          ON Grafik (ID_stadionu);
+CREATE INDEX ix_grafik_sport            ON Grafik (ID_sportowca);
+CREATE INDEX ix_grafik_trener           ON Grafik (ID_pracownika);
+CREATE INDEX ix_grafik_przyrzad         ON Grafik (ID_przyrzadu);
+CREATE INDEX ix_grafik_czas_rozpoczecia ON Grafik (Czas_rozpoczecia);
 \end{lstlisting}
 
-\subsection{Przykłady zapytań i poleceń SQL}
-Każde zapytanie opisz krótko: jaki problem rozwiązuje i jaki wynik zwraca.
-\begin{lstlisting}[caption={Przykładowe zapytanie}]
-SELECT kolumna, COUNT(*) AS liczba
-FROM Nazwa_tabeli
-GROUP BY kolumna;
+\clearpage
+\subsection{Przykłady zapytań i poleceń SQL odnoszących się do bazy danych}
+Poniżej zaprezentowano zestaw przykładowych zapytań i poleceń SQL weryfikujących poprawność działania zaimplementowanej bazy danych w typowych scenariuszach jej użycia.
+
+\subsubsection*{1. Szczegółowy harmonogram zaplanowanych treningów}
+Zapytanie pobiera pełny harmonogram zajęć z tabeli \texttt{Grafik}, łącząc ją z tabelami \texttt{Cwiczenie}, \texttt{Stadion} oraz \texttt{Sportowiec} za pomocą złączeń wewnętrznych (\texttt{JOIN}). Złączenia lewostronne (\texttt{LEFT JOIN}) z tabelami \texttt{Pracownik} oraz \texttt{Przyrzad} pozwalają uwzględnić również treningi samodzielne (bez przypisanego trenera) oraz zajęcia niewymagające sprzętu, zastępując wartości \texttt{NULL} czytelnymi etykietami. Wyniki są sortowane chronologicznie według kolumny \texttt{Czas\_rozpoczecia}.
+
+\begin{lstlisting}[caption={Szczegółowy harmonogram zaplanowanych sesji treningowych}]
+SELECT TO_CHAR(g.Czas_rozpoczecia, 'YYYY-MM-DD HH24:MI') AS start_treningu,
+       TO_CHAR(g.Czas_zakonczenia, 'HH24:MI') AS koniec,
+       c.Nazwa AS cwiczenie,
+       st.Nazwa AS stadion,
+       sp.Imie || ' ' || sp.Nazwisko AS sportowiec,
+       NVL2(p.ID_pracownika, p.Imie || ' ' || p.Nazwisko, 'Trening własny')
+           AS trener,
+       NVL(pr.Nazwa, 'Brak') AS przyrzad
+FROM Grafik g
+JOIN Cwiczenie c      ON g.ID_cwiczenia  = c.ID_cwiczenia
+JOIN Stadion st       ON g.ID_stadionu   = st.ID_stadionu
+JOIN Sportowiec sp    ON g.ID_sportowca  = sp.ID_sportowca
+LEFT JOIN Pracownik p ON g.ID_pracownika = p.ID_pracownika
+LEFT JOIN Przyrzad pr ON g.ID_przyrzadu  = pr.ID_przyrzadu
+ORDER BY g.Czas_rozpoczecia;
 \end{lstlisting}
 
-% ============================================================
-% DODATKOWE ELEMENTY – OPCJONALNE
-% ============================================================
-% Dodaj kolejne sekcje, jeśli wymaga tego temat lub prowadzący.
-% Przykładowo:
-%
-% \section{Testowanie}
-% \subsection{Dane testowe}
-% \subsection{Scenariusze testowe}
-%
-% \section{Podsumowanie}
-% [Wnioski końcowe, ograniczenia i możliwe kierunki rozwoju.]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pok1.png}
+    \caption{Wynik zapytania 1 -- harmonogram zaplanowanych treningów}
+    \label{fig:wynik-zapytanie-1}
+\end{figure}
 
-% ============================================================
-% BIBLIOGRAFIA – JEŚLI WYMAGANA
-% ============================================================
-% \begin{thebibliography}{9}
-% \bibitem{oracle} Oracle, dokumentacja systemu Oracle Database,
-% \url{https://docs.oracle.com/}.
-% \end{thebibliography}
+\subsubsection*{2. Wykaz trenerów wraz z liczbą prowadzonych sportowców}
+Zapytanie pobiera dane osobowe pracowników będących trenerami, ich specjalizację oraz numer licencji, a następnie wyznacza liczbę sportowców przypisanych do każdego trenera w tabeli pośredniej \texttt{Trener\_Sportowiec}.
+
+\begin{lstlisting}[caption={Trenerzy oraz liczba przypisanych do nich sportowców}]
+SELECT p.Imie, p.Nazwisko, t.Specjalizacja, t.Nr_licencji,
+       COUNT(ts.ID_sportowca) AS liczba_sportowcow
+FROM Pracownik p
+JOIN Trener t ON p.ID_pracownika = t.ID_pracownika
+LEFT JOIN Trener_Sportowiec ts ON t.ID_pracownika = ts.ID_pracownika
+GROUP BY p.Imie, p.Nazwisko, t.Specjalizacja, t.Nr_licencji
+ORDER BY liczba_sportowcow DESC;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pok2.png}
+    \caption{Wynik zapytania 2 -- wykaz trenerów i liczby trenowanych sportowców}
+    \label{fig:wynik-zapytanie-2}
+\end{figure}
+
+
+\subsubsection*{3. Wyszukiwanie przyrządów wymagających naprawy lub przeglądu}
+Zapytanie wykorzystuje indeks na kolumnie \texttt{Stan\_techniczny} i zwraca listę przyrządów o stanie innym niż \texttt{Sprawny} wraz z nazwą stadionu, na którym dany sprzęt się znajduje.
+
+\begin{lstlisting}[caption={Zestawienie przyrządów niesprawnych wraz z ich lokalizacją}]
+SELECT pr.ID_przyrzadu, pr.Rodzaj, pr.Nazwa,
+       pr.Stan_techniczny, s.Nazwa AS stadion
+FROM Przyrzad pr
+JOIN Stadion s ON pr.ID_stadionu = s.ID_stadionu
+WHERE pr.Stan_techniczny <> 'Sprawny'
+ORDER BY s.Nazwa, pr.Nazwa;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pok3.png}
+    \caption{Wynik zapytania 3 -- wykaz przyrządów wymagających serwisu}
+    \label{fig:wynik-zapytanie-3}
+\end{figure}
 
 \end{document}
