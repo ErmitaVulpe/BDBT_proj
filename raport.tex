@@ -124,10 +124,11 @@
 % ============================================================
 \section{Zakres i cel projektu}
 Celem projektu jest modelowanie oraz implementacja bazy danych w modelu relacyjnym. Projekt składa
-się z trzech części: - modelu konceptualnego, modelu logicznego oraz implementacji fizycznej w
-silniku bazy danych Oracle XE. Baza danych modelowana jest w ramach zarządzania klubem
-lekkoatletycznym, jego sportowcami, ich trenerami, oraz przyrządami do ćwiczeń, informacją o
-lokalizacji poszczególnych przyrządów i kiedy są dostępne.
+się z trzech części: modelu konceptualnego, modelu logicznego oraz implementacji fizycznej w
+silniku bazy danych Oracle Database 23ai. Baza danych modelowana jest na potrzeby zarządzania
+jednym klubem lekkoatletycznym (o jednej, unikalnej nazwie), jego pracownikami, trenerami,
+sportowcami, stadionami oraz przyrządami do ćwiczeń, wraz z informacją o lokalizacji poszczególnych
+przyrządów oraz grafiku ich wykorzystania.
 
 % ============================================================
 % 2. DEFINICJA SYSTEMU
@@ -137,33 +138,36 @@ lokalizacji poszczególnych przyrządów i kiedy są dostępne.
 \subsection{Perspektywy użytkowników}
 Do głównych użytkowników naszego systemu przypisujemy następujące perspektywy:
 \begin{itemize}
-    \item \textbf{Administrator} -- Pełny wgląd, modyfikacja list pracowników, stadionów i przyrządów.
-    \item \textbf{Trener} -- Wgląd w sportowców których trenuje oraz gdzie i kiedy odbywają się treningi.
-    \item \textbf{Sportowiec} -- Wgląd w swoich trenerów, gdzie i kiedy odbywają się treningi, a także zapis na kolejne treningi.
+    \item \textbf{Administrator} -- Pełny wgląd oraz zarządzanie danymi klubu, listami pracowników, trenerów, sportowców, oferowanych ćwiczeń, stadionów i przyrządów.
+    \item \textbf{Trener} -- Wgląd w przypisanych sportowców, własny grafik oraz możliwość aktualizacji stanu technicznego przyrządów.
+    \item \textbf{Sportowiec} -- Wgląd w przypisanych trenerów, własny grafik (gdzie i kiedy odbywają się treningi), zapis na kolejne treningi oraz zgłaszanie zmian stanu technicznego przyrządów.
 \end{itemize}
 
 \subsection{Funkcjonalności zaimplementowanego systemu}
 
 \subsubsection{Administrator}
 \begin{itemize}
+    \item Podgląd i modyfikacja danych klubu.
     \item Dodawanie/modyfikacja/usuwanie oferowanych ćwiczeń.
-    \item Dodawanie/modyfikacja/usuwanie pracowników.
+    \item Dodawanie/modyfikacja/usuwanie pracowników i trenerów.
     \item Dodawanie/modyfikacja/usuwanie przyrządów.
     \item Dodawanie/modyfikacja/usuwanie sportowców.
-    \item Dodawanie/modyfikacja/usuwanie stadionów.
+    \item Dodawanie/modyfikacja/usuwanie stadionów oraz ich godzin otwarcia.
 \end{itemize}
 
 \subsubsection{Trener}
 \begin{itemize}
     \item Podgląd swojego grafiku.
-    \item Dodawanie/modyfikacja stanu technicznego przyrządu.
+    \item Podgląd trenowanych sportowców.
+    \item Modyfikacja stanu technicznego przyrządu.
 \end{itemize}
 
 \subsubsection{Sportowiec}
 \begin{itemize}
     \item Podgląd swojego grafiku.
-    \item Dodawanie/modyfikacja stanu technicznego przyrządu.
-    \item Dodawanie do grafku (zapis na kolejne treningi).
+    \item Podgląd przypisanych trenerów.
+    \item Modyfikacja stanu technicznego przyrządu.
+    \item Dodawanie wpisu do grafiku (zapis na kolejne treningi).
 \end{itemize}
 
 \clearpage
@@ -174,54 +178,53 @@ Do głównych użytkowników naszego systemu przypisujemy następujące perspekt
 
 \subsection{Definicja zbiorów encji}
 \begin{itemize}
-    \item \textbf{Klub} -- Główna encja, klub lekkoatletyczny.
+    \item \textbf{Klub} -- Główna encja reprezentująca zarządzany klub lekkoatletyczny (w systemie zakłada się istnienie dokładnie jednego klubu o jednej, unikalnej nazwie).
     \item \textbf{Pracownik} -- Osoba zatrudniona przez klub.
-    \item \textbf{Trener} -- Pracownik który jest trenerem.
-    \item \textbf{Cwiczenie} -- Ćwiczenie które jest oferowane przez klub.
-    \item \textbf{Stadion} -- Lokacja fizyczna gdzie odbywają się ćwiczenia.
-    \item \textbf{Sportowiec} -- Członek klubu, osoba która wykonuje ćwiczenia.
-    \item \textbf{Grafik} -- Grafik sesji treningowych.
-    \item \textbf{Przyrzad} -- Przyrząd do ćwiczeń.
+    \item \textbf{Trener} -- Specjalizacja encji Pracownik; pracownik posiadający uprawnienia trenerskie.
+    \item \textbf{Cwiczenie} -- Ćwiczenie oferowane przez klub.
+    \item \textbf{Stadion} -- Lokalizacja fizyczna, w której odbywają się ćwiczenia.
+    \item \textbf{Sportowiec} -- Członek klubu, osoba wykonująca ćwiczenia.
+    \item \textbf{Grafik} -- Harmonogram sesji treningowych.
+    \item \textbf{Przyrzad} -- Przyrząd do ćwiczeń przypisany do stadionu.
 \end{itemize}
 
 \subsection{Ustalenie związków między encjami i ich typów}
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{|L{3.2cm}|C{1.6cm}|X|}
+\begin{tabularx}{\textwidth}{|L{3.5cm}|C{1.6cm}|X|}
 \hline
 \textbf{Relacja} & \textbf{Rodzaj} & \textbf{Opis} \\
 \hline
-Pracownik -- Trener & 1:1 & Dziedziczenie: pracownik może być trenerem. Dane trenera są
-rozszerzeniem danych pracownika. \\
+Pracownik -- Trener & 1:1 & Dziedziczenie (specjalizacja opcjonalna 1:0..1): pracownik może być trenerem. Dane stanowią rozszerzenie danych pracownika. \\
 \hline
-Cwiczenie -- Grafik & 1:N & Jakim ćwiczeniem jest dany wpis w grafiku. \\
+Cwiczenie -- Grafik & 1:N & Określa, jakiego ćwiczenia dotyczy dany wpis w grafiku. \\
 \hline
-Cwiczenie -- Sportowiec & M:N & Ćwiczenia które wykonuje sportowiec. \\
+Cwiczenie -- Sportowiec & M:N & Ćwiczenia wykonywane przez poszczególnych sportowców. \\
 \hline
-Cwiczenie -- Stadion & M:N & Ćwiczenia które odbywają się na danych stadionach. \\
+Cwiczenie -- Stadion & M:N & Ćwiczenia, które mogą odbywać się na danych stadionach. \\
 \hline
-Klub -- Cwiczenie & 1:N & Klub oferuje dane ćwiczenia. \\
+Klub -- Cwiczenie & 1:N & Klub oferuje określone ćwiczenia. \\
 \hline
-Klub -- Pracownik & 1:N & Klub zatrudnia pracownika. \\
+Klub -- Pracownik & 1:N & Klub zatrudnia pracowników. \\
 \hline
-Klub -- Stadion & 1:N & Klub posiada stadion. \\
+Klub -- Stadion & 1:N & Klub posiada stadiony. \\
 \hline
-Pracownik -- Grafik & 1:N & Pracownik (który jest trenerem) jest przypisany do danej sesji treningowej w grafiku. \\
+Trener -- Grafik & 1:N & Trener może być przypisany do danej sesji treningowej w grafiku (relacja opcjonalna po stronie trenera -- dopuszczalne są treningi własne). \\
 \hline
-Pracownik -- Sportowiec & M:N & Pracownik (który jest trenerem) trenuje sportowca. \\
+Trener -- Sportowiec & M:N & Trener trenuje przypisanych sportowców. \\
 \hline
-Pracownik -- Stadion & M:N & Pracownik pracuje na danych stadionach. \\
+Pracownik -- Stadion & M:N & Pracownik pracuje na określonych stadionach. \\
 \hline
-Przyrzad -- Grafik & 1:N & Jaki przyrząd jest urzywany w danej sesji treningowej \\
+Przyrzad -- Grafik & 1:N & Jaki przyrząd jest używany w danej sesji treningowej (relacja opcjonalna -- trening może nie wymagać sprzętu). \\
 \hline
 Sportowiec -- Grafik & 1:N & Zapisy sportowca na sesje treningowe. \\
 \hline
-Stadion -- Grafik & 1:N & Na którym stadionie odbywa się konkretna sesja trningowa. \\
+Stadion -- Grafik & 1:N & Na którym stadionie odbywa się konkretna sesja treningowa. \\
 \hline
-Stadion -- Przyrzad & 1:N & Na stadionie znajduje się wiele przyrządów, każdy przyrząd jest przypisany do jednego stadionu. \\
+Stadion -- Przyrzad & 1:N & Na stadionie znajduje się wiele przyrządów; każdy przyrząd jest przypisany do jednego stadionu. \\
 \hline
-Stadion -- Sportowiec & M:N & Sportowiec chodzi na dany stadion. \\
+Stadion -- Sportowiec & M:N & Sportowiec uczęszcza na określone stadiony. \\
 \hline
 \end{tabularx}
 \caption{Związki między encjami}
@@ -239,14 +242,14 @@ Stadion -- Sportowiec & M:N & Sportowiec chodzi na dany stadion. \\
 \hline
 ID\_klubu & Int & tak & Unikalny identyfikator encji. \\
 \hline
-Nazwa & Varchar(50) & tak & Nazwa klubu. \\
+Nazwa & Varchar(50) & tak & Unikalna nazwa klubu (system obsługuje jeden klub). \\
 \hline
 Adres & Varchar(100) & tak & Adres siedziby klubu. Pole segmentowe zawierające miasto, ulicę,
-numer budynku, numer lokalu oraz adres pocztowy. \\
+numer budynku, numer lokalu oraz kod pocztowy. \\
 \hline
 NIP & Char(10) & tak & Numer Identyfikacji Podatkowej klubu. \\
 \hline
-REGON & Varchar(14) & nie & Numer REOGON klubu. \\
+REGON & Varchar(14) & nie & Numer REGON klubu. \\
 \hline
 Data\_zalozenia & Date & nie & Data założenia klubu. \\
 \hline
@@ -290,7 +293,7 @@ Nr\_telefonu & Char(9) & nie & Numer telefonu pracownika. \\
 \hline
 ID\_pracownika & Int & tak & Dziedziczony unikalny identyfikator pracownika. \\
 \hline
-Specjalizacja & Varchar(100) & tak & Dysycyplina sportowa w jakiej się specjalizuje. \\
+Specjalizacja & Varchar(100) & tak & Dyscyplina sportowa, w jakiej specjalizuje się trener. \\
 \hline
 Nr\_licencji & Char(14) & tak & Numer licencji Polskiego Związku Lekkiej Atletyki. \\
 \hline
@@ -313,13 +316,13 @@ Staz\_lat & Int & nie & Ilość lat stażu. \\
 \hline
 ID\_cwiczenia & Int & tak & Unikalny identyfikator encji. \\
 \hline
-Nazwa & Varchar(50) & tak & Nazwa dysycyplina sportowej. \\
+Nazwa & Varchar(50) & tak & Nazwa ćwiczenia. \\
 \hline
 Dyscyplina & Varchar(50) & tak & Dyscyplina sportowa ćwiczenia. \\
 \hline
 Czas\_trwania\_min & Int & tak & Czas trwania sesji w minutach. \\
 \hline
-Poziom\_trudnosci & Int & tak & Poziom trudności ćwiczenia. \\
+Poziom\_trudnosci & Int & tak & Poziom trudności ćwiczenia (w skali 1--5). \\
 \hline
 Liczba\_powtorzen & Int & nie & Liczba powtórzeń w sesji. \\
 \hline
@@ -343,7 +346,7 @@ ID\_stadionu & Int & tak & Unikalny identyfikator encji. \\
 Nazwa & Varchar(50) & tak & Nazwa stadionu. \\
 \hline
 Adres & Varchar(100) & tak & Adres stadionu. Pole segmentowe zawierające miasto, ulicę,
-numer budynku, numer lokalu oraz adres pocztowy. \\
+numer budynku, numer lokalu oraz kod pocztowy. \\
 \hline
 Typ\_obiektu & Varchar(50) & tak & Typ obiektu. \\
 \hline
@@ -430,15 +433,18 @@ Data\_zakupu & Date & nie & Data zakupu przyrządu. \\
 
 \subsection{Dodatkowe reguły integralnościowe (reguły biznesowe)}
 \begin{itemize}
-    \item Pracownik może prowadzić treningi wyłącznie wtedy, gdy posiada odpowiednie kwalifikacje.
+    \item Baza danych obsługuje dokładnie jeden klub lekkoatletyczny o jednej, unikalnej nazwie (\texttt{ID\_klubu = 1}).
+    \item Pracownik może prowadzić treningi wyłącznie wtedy, gdy posiada odpowiednie kwalifikacje (posiada odpowiadający rekord w tabeli \texttt{Trener}).
     \item Pracownik nie może mieć daty zatrudnienia późniejszej niż aktualna data.
-    \item Pracownik może pracować na kilku stadionach należących do klubu, ale nie może prowadzić
+    \item Trener może pracować na kilku stadionach należących do klubu, ale nie może prowadzić
         dwóch zajęć w tym samym czasie.
     \item Każdy trener musi posiadać ważną licencję trenerską.
     \item Data ważności licencji trenera nie może być wcześniejsza niż data rozpoczęcia prowadzonych
         przez niego zajęć.
+    \item Data dołączenia sportowca do klubu nie może być wcześniejsza niż jego data urodzenia.
     \item Data rozpoczęcia treningu musi być wcześniejsza niż data jego zakończenia.
     \item Sportowiec nie może zapisać się na dwa treningi odbywające się w tym samym czasie.
+    \item Przyrząd używany podczas sesji treningowej musi znajdować się na stadionie, na którym odbywa się ta sesja, i nie może być jednocześnie zarezerwowany na inne zajęcia.
 \end{itemize}
 
 \subsection{Klucze kandydujące i główne (decyzje projektowe)}
@@ -449,7 +455,7 @@ Data\_zakupu & Date & nie & Data zakupu przyrządu. \\
 \hline
 \textbf{Nazwa encji} & \textbf{Klucz główny} & \textbf{Klucz kandydujący} \\
 \hline
-Klub & ID\_klubu & NIP, REGON (jeżeli podany) \\
+Klub & ID\_klubu & Nazwa, NIP, REGON (jeżeli podany) \\
 \hline
 Pracownik & ID\_pracownika & -- \\
 \hline
@@ -459,7 +465,7 @@ Cwiczenie & ID\_cwiczenia & -- \\
 \hline
 Stadion & ID\_stadionu & -- \\
 \hline
-Sportowiec & ID\_sportowca & -- \\
+Sportowiec & ID\_sportowca & Nr\_licencji (jeżeli podany) \\
 \hline
 Grafik & ID\_wpisu & -- \\
 \hline
@@ -480,19 +486,10 @@ Przyrzad & ID\_przyrzadu & -- \\
 
 \subsection{Problem pułapek szczelinowych i wachlarzowych – analiza i przykłady}
 \subsubsection{Pułapka szczelinowa}
-Może pojawić się w przypadku relacji pomiędzy encjami Klub, Pracownik i Stadion. Klub zatrudnia
-pracowników, którzy pracują na określonych stadionach, a jednocześnie klub posiada stadiony.
-Jeżeli nie każdy stadion ma przypisanego pracownika, wyszukiwanie stadionów za pośrednictwem
-tabeli Pracownik może zwrócić niekompletne wyniki. Bezpośrednia relacja między klubem a stadionem
-pozwala uzyskać pełniejsze informacje.
+Może pojawić się w przypadku relacji pomiędzy encjami \texttt{Klub}, \texttt{Pracownik} i \texttt{Stadion}. Klub zatrudnia pracowników, którzy pracują na określonych stadionach, a jednocześnie klub posiada stadiony. Jeżeli nie każdy stadion ma przypisanego pracownika, wyszukiwanie stadionów za pośrednictwem tabeli \texttt{Pracownik} (i \texttt{Pracownik\_Stadion}) zwróciłoby niekompletne wyniki. Bezpośrednia relacja 1:N między \texttt{Klub} a \texttt{Stadion} eliminuje tę pułapkę. Podobnie w tabeli \texttt{Grafik} klucz obcy \texttt{ID\_pracownika} (wskazujący na \texttt{Trener}) jest opcjonalny -- bezpośrednia relacja \texttt{Sportowiec}--\texttt{Grafik} gwarantuje, że przy odczycie harmonogramu nie zostaną pominięte treningi własne bez przypisanego trenera.
 
 \subsubsection{Pułapka wachlarzowa}
-może występować w przypadku encji Klub, która jest powiązana z encjami Pracownik oraz Ćwiczenie.
-Obie relacje mają charakter 1:N. Podczas jednoczesnego łączenia tych tabel może dojść do
-zwielokrotnienia wyników zapytania SQL. Przykładowo pracownicy mogą zostać połączeni ze wszystkimi
-ćwiczeniami oferowanymi przez dany klub, mimo że nie prowadzą wszystkich tych zajęć. Problem można
-rozwiązać przez odpowiednie odwzorowanie relacji między pracownikami a ćwiczeniami, np. za pomocą
-tabeli pośredniej.
+Może występować w przypadku encji \texttt{Klub}, która jest powiązana z encjami \texttt{Pracownik} oraz \texttt{Cwiczenie} dwiema niezależnymi relacjami 1:N. Podczas jednoczesnego łączenia tych tabel przez \texttt{ID\_klubu} dochodzi do zwielokrotnienia wyników zapytania SQL (iloczynu kartezjańskiego) -- przy założeniu jednego klubu każdy pracownik zostałby połączony z każdym ćwiczeniem oferowanym przez klub, mimo że nie prowadzi wszystkich tych zajęć. W zaprojektowanym modelu logicznym (\cref{fig:er-faktyczny}) powiązanie między trenerem a konkretnymi ćwiczeniami odbywa się bezpośrednio przez tabelę \texttt{Grafik} (a lokalizacja zajęć i pracy przez tabele \texttt{Cwiczenie\_Stadion} oraz \texttt{Pracownik\_Stadion}), bez pośredniego łączenia przez \texttt{Klub}.
 
 % ============================================================
 % 4. MODEL LOGICZNY
@@ -502,17 +499,18 @@ tabeli pośredniej.
 \subsection{Charakterystyka modelu relacyjnego}
 Model konceptualny zaimplementowano w środowisku DBeaver z wykorzystaniem silnika Oracle Database 23ai. Przekształcenie do modelu relacyjnego obejmowało:
 \begin{itemize}
-    \item zastąpienie wszystkich relacji wiele-do-wielu (N:N) parami relacji jeden-do-wielu (1:N) z tabelami pośredniczącymi,
-    \item realizację relacji 1:N poprzez przeniesienie klucza głównego tabeli nadrzędnej jako klucza obcego (\texttt{FOREIGN KEY}) do tabeli podrzędnej z zachowaniem opcjonalności (np. w \texttt{Grafik} kolumny \texttt{ID\_cwiczenia}, \texttt{ID\_stadionu} i \texttt{ID\_sportowca} są obowiązkowe, natomiast \texttt{ID\_pracownika} oraz \texttt{ID\_przyrzadu} opcjonalne),
+    \item zastąpienie wszystkich relacji wiele-do-wielu (M:N) parami relacji jeden-do-wielu (1:N) z tabelami pośredniczącymi,
+    \item realizację relacji 1:N poprzez przeniesienie klucza głównego tabeli nadrzędnej jako klucza obcego (\texttt{FOREIGN KEY}) do tabeli podrzędnej z zachowaniem opcjonalności (np. w \texttt{Grafik} kolumny \texttt{ID\_cwiczenia}, \texttt{ID\_stadionu} i \texttt{ID\_sportowca} są obowiązkowe, natomiast \texttt{ID\_pracownika} wskazujące na \texttt{Trener} oraz \texttt{ID\_przyrzadu} wskazujące na \texttt{Przyrzad} są opcjonalne),
+    \item zachowanie tabeli \texttt{Klub} i powiązań z \texttt{ID\_klubu} zgodnie ze schematem logicznym (\cref{fig:er-faktyczny}), przy jednoczesnym ograniczeniu jej na poziomie więzów integralności do dokładnie jednego klubu o jednej, unikalnej nazwie (\texttt{ID\_klubu = 1}),
     \item mapowanie typów ogólnych na natywne typy silnika Oracle (\texttt{INTEGER}/\texttt{NUMBER(38,0)}, \texttt{VARCHAR2}, \texttt{CHAR}, \texttt{DATE}, \texttt{CLOB}, \texttt{NUMBER(1)}),
-    \item zdefiniowanie kluczy głównych (\texttt{PRIMARY KEY}), więzów integralności (\texttt{NOT NULL}, \texttt{UNIQUE}, \texttt{CHECK}) oraz indeksów na kluczach obcych.
+    \item zdefiniowanie kluczy głównych (\texttt{PRIMARY KEY}), więzów integralności (\texttt{NOT NULL}, \texttt{UNIQUE}, \texttt{CHECK}), wyzwalaczy (\texttt{TRIGGER}) oraz indeksów na kluczach obcych.
 \end{itemize}
 
 \subsection{Zmiany właściwości niekompatybilnych z modelem relacyjnym}
 \begin{itemize}
     \item \textbf{Dekompozycja atrybutów złożonych i wielowartościowych:} Pole segmentowe \texttt{Adres} w tabelach \texttt{Klub} i \texttt{Stadion} rozbito na kolumny atomowe: \texttt{Miasto}, \texttt{Ulica}, \texttt{Nr\_budynku}, \texttt{Nr\_lokalu} (opcjonalne) oraz \texttt{Kod\_pocztowy}. Złożone pole \texttt{Godziny\_otwarcia} z encji \texttt{Stadion} wydzielono do osobnej tabeli \texttt{Godziny\_otwarcia} (\texttt{Dzien\_tygodnia}, \texttt{Godzina\_otwarcia}, \texttt{Godzina\_zamkniecia}) w relacji 1:N ze \texttt{Stadion}.
     \item \textbf{Usunięcie dziedziczenia:} Specjalizację \texttt{Pracownik}--\texttt{Trener} zastąpiono relacją identyfikującą 1:1, w której kluczem głównym i jednocześnie obcym (PFK) tabeli \texttt{Trener} jest \texttt{ID\_pracownika}.
-    \item \textbf{Odwzorowanie relacji N:N:} Pięć związków wiele-do-wielu rozbito na tabele pośredniczące ze złożonymi kluczami głównymi (PFK):
+    \item \textbf{Odwzorowanie relacji M:N:} Pięć związków wiele-do-wielu rozbito na tabele pośredniczące ze złożonymi kluczami głównymi (PFK):
     \begin{itemize}
         \item \texttt{Pracownik\_Stadion} (\emph{Pracują}) -- przypisanie pracowników do obsługiwanych stadionów,
         \item \texttt{Trener\_Sportowiec} (\emph{Trenuje}) -- powiązanie trenerów ze szkolonymi zawodnikami,
@@ -541,9 +539,9 @@ Normalizację przeprowadzono w celu ograniczenia redundancji danych oraz wyelimi
 \subsection{Więzy integralności}
 Spójność danych zapewniono poprzez następujące mechanizmy na poziomie silnika Oracle:
 \begin{itemize}
-    \item \textbf{Integralność encji:} Każda z 14 tabel posiada klucz główny (\texttt{PRIMARY KEY}), gwarantujący unikalność rekordów i brak wartości \texttt{NULL}. W tabelach głównych zastosowano klucze sztuczne (np. \texttt{ID\_klubu}, \texttt{ID\_wpisu}), w \texttt{Trener} klucz dziedziczony \texttt{ID\_pracownika}, a w tabelach łączących złożone klucze główne (np. \texttt{(ID\_sportowca, ID\_cwiczenia)}) blokujące duplikaty powiązań.
-    \item \textbf{Integralność referencyjna:} Klucze obce (\texttt{FOREIGN KEY}) blokują wstawienie rekordu wskazującego na nieistniejący obiekt nadrzędny oraz usunięcie rekordu, do którego istnieją odwołania (np. nie można dodać wpisu w \texttt{Trener} bez odpowiadającego rekordu w \texttt{Pracownik} ani usunąć obiektu \texttt{Klub}, do którego przypisane są stadiony lub pracownicy).
-    \item \textbf{Integralność domenowa:} Dopasowano typy i rozmiary kolumn do charakteru danych (m.in. \texttt{VARCHAR2} dla napisów zmiennej długości, stałodługościowe \texttt{CHAR} dla \texttt{NIP}, \texttt{Nr\_telefonu}, \texttt{Kod\_pocztowy}, \texttt{Nr\_licencji} i godzin \texttt{HH:MM}, \texttt{DATE} dla dat i terminów zajęć, \texttt{CLOB} dla \texttt{Cwiczenie.Opis} oraz \texttt{NUMBER(1)} dla \texttt{Przyrzad.Wynajety} i \texttt{Godziny\_otwarcia.Dzien\_tygodnia}). Na pola obowiązkowe nałożono \texttt{NOT NULL}, a na klucze kandydujące ograniczenia \texttt{UNIQUE} (\texttt{Klub.NIP}, \texttt{Klub.REGON}, \texttt{Trener.Nr\_licencji} oraz para \texttt{(ID\_stadionu, Dzien\_tygodnia)}). Ograniczenia \texttt{CHECK} weryfikują m.in. \texttt{Czas\_zakonczenia > Czas\_rozpoczecia}, \texttt{Poziom\_trudnosci BETWEEN 1 AND 5}, \texttt{Czas\_trwania\_min > 0}, \texttt{Staz\_lat >= 0}, \texttt{Wynajety IN (0, 1)} oraz \texttt{Dzien\_tygodnia BETWEEN 1 AND 7}. Reguły wielowierszowe i zależne od bieżącej daty (brak kolizji w grafiku, ważność licencji w dniu zajęć, data zatrudnienia niepóźniejsza niż aktualna) realizowane są w fazie fizycznej wyzwalaczami (\texttt{TRIGGER}).
+    \item \textbf{Integralność encji:} Każda z 14 tabel posiada klucz główny (\texttt{PRIMARY KEY}), gwarantujący unikalność rekordów i brak wartości \texttt{NULL}. W tabelach głównych zastosowano klucze sztuczne (np. \texttt{ID\_klubu}, \texttt{ID\_wpisu}), w \texttt{Trener} klucz dziedziczony \texttt{ID\_pracownika}, a w tabelach łączących złożone klucze główne (np. \texttt{(ID\_sportowca, ID\_cwiczenia)}) blokujące duplikaty powiązań. W tabeli \texttt{Klub} dodatkowe ograniczenie \texttt{CHECK (ID\_klubu = 1)} gwarantuje przechowywanie dokładnie jednego klubu.
+    \item \textbf{Integralność referencyjna:} Klucze obce (\texttt{FOREIGN KEY}) blokują wstawienie rekordu wskazującego na nieistniejący obiekt nadrzędny oraz usunięcie rekordu, do którego istnieją odwołania (np. nie można dodać wpisu w \texttt{Trener} bez odpowiadającego rekordu w \texttt{Pracownik} ani usunąć obiektu \texttt{Klub}, do którego przypisane są stadiony, ćwiczenia lub pracownicy).
+    \item \textbf{Integralność domenowa:} Dopasowano typy i rozmiary kolumn do charakteru danych (m.in. \texttt{VARCHAR2} dla napisów zmiennej długości, stałodługościowe \texttt{CHAR} dla \texttt{NIP}, \texttt{Nr\_telefonu}, \texttt{Kod\_pocztowy}, \texttt{Nr\_licencji} i godzin \texttt{HH:MM}, \texttt{DATE} dla dat i terminów zajęć, \texttt{CLOB} dla \texttt{Cwiczenie.Opis} oraz \texttt{NUMBER(1)} dla \texttt{Przyrzad.Wynajety} i \texttt{Godziny\_otwarcia.Dzien\_tygodnia}). Na pola obowiązkowe nałożono \texttt{NOT NULL}, a na klucze kandydujące ograniczenia \texttt{UNIQUE} (\texttt{Klub.Nazwa}, \texttt{Klub.NIP}, \texttt{Klub.REGON}, \texttt{Trener.Nr\_licencji}, \texttt{Sportowiec.Nr\_licencji} oraz para \texttt{(ID\_stadionu, Dzien\_tygodnia)}). Ograniczenia \texttt{CHECK} weryfikują m.in.: \texttt{ID\_klubu = 1}, poprawność formatów kodów pocztowych, numerów \texttt{NIP}, \texttt{REGON}, telefonu i godzin \texttt{HH:MM}, relacje \texttt{Godzina\_zamkniecia > Godzina\_otwarcia}, \texttt{Czas\_zakonczenia > Czas\_rozpoczecia} oraz \texttt{Data\_dolaczenia >= Data\_urodzenia}, a także dziedziny \texttt{Poziom\_trudnosci} (1--5), \texttt{Czas\_trwania\_min > 0}, \texttt{Liczba\_powtorzen > 0}, \texttt{Staz\_lat >= 0}, \texttt{Wynajety IN (0, 1)} i \texttt{Dzien\_tygodnia} (1--7). Reguły wielowierszowe i zależne od bieżącej daty (brak kolizji sportowców, trenerów i przyrządów w grafiku, zgodność lokalizacji przyrządu ze stadionem, ważność licencji trenera, data zatrudnienia niepóźniejsza niż aktualna) zaimplementowano w fazie fizycznej wyzwalaczami (\texttt{TRIGGER}).
 \end{itemize}
 
 \subsection{Proces denormalizacji -- analiza i przykłady}
@@ -591,7 +589,7 @@ Podgląd trenowanych sportowców & Trener & Wykonalne & Tabele Trener\_Sportowie
 \hline
 Podgląd przypisanych trenerów & Sportowiec & Wykonalne & Tabele Trener\_Sportowiec, Trener, Pracownik \\
 \hline
-Zapis na kolejne treningi & Sportowiec & Wykonalne & Tabele Grafik, Cwiczenie, Stadion, Przyrzad \\
+Zapis na kolejne treningi & Sportowiec & Wykonalne & Tabele Grafik, Cwiczenie, Stadion, Sportowiec, Trener, Przyrzad \\
 \hline
 \end{tabularx}
 \caption{Weryfikacja wykonalności transakcji}
@@ -599,29 +597,23 @@ Zapis na kolejne treningi & Sportowiec & Wykonalne & Tabele Grafik, Cwiczenie, S
 \end{table}
 
 \subsection{Strojenie bazy danych -- dobór indeksów}
-W silniku Oracle Database klucze główne (\texttt{PRIMARY KEY}) oraz ograniczenia unikalności (\texttt{UNIQUE}) są indeksowane automatycznie, natomiast kolumny kluczy obcych (\texttt{FOREIGN KEY}) nie otrzymują indeksów domyślnie. W celu przyspieszenia złączeń między tabelami oraz uniknięcia blokad podczas modyfikacji rekordów nadrzędnych utworzono indeksy na wszystkich kluczach obcych tabel głównych, a także dodatkowe indeksy na kolumnach często wykorzystywanych w warunkach filtrujących (\texttt{Grafik.Czas\_rozpoczecia} oraz \texttt{Przyrzad.Stan\_techniczny}).
+W silniku Oracle Database klucze główne (\texttt{PRIMARY KEY}) oraz ograniczenia unikalności (\texttt{UNIQUE}) są indeksowane automatycznie, natomiast kolumny kluczy obcych (\texttt{FOREIGN KEY}) nie otrzymują indeksów domyślnie. W celu przyspieszenia złączeń między tabelami oraz uniknięcia blokad tabel podrzędnych podczas modyfikacji rekordów nadrzędnych utworzono indeksy na wszystkich nieindeksowanych wcześniej kluczach obcych (zarówno w tabelach głównych, jak i na drugiej kolumnie złożonych kluczy w tabelach pośredniczących), a także dodatkowe indeksy na kolumnach często wykorzystywanych w warunkach filtrujących (\texttt{Grafik.Czas\_rozpoczecia} oraz \texttt{Przyrzad.Stan\_techniczny}). W tabeli \texttt{Godziny\_otwarcia} świadomie zrezygnowano z osobnego indeksu na \texttt{ID\_stadionu}, ponieważ ograniczenie \texttt{UNIQUE (ID\_stadionu, Dzien\_tygodnia)} automatycznie tworzy indeks, w którym \texttt{ID\_stadionu} jest kolumną wiodącą. Z kolei indeksy na kolumnach \texttt{ID\_klubu} utrzymano ze względu na ochronę przed blokadami klucza obcego w Oracle, mimo że przy założeniu jednego klubu ich selektywność przy filtrowaniu jest niska.
 
 \paragraph{Pracownik}
 \begin{itemize}
-    \item \texttt{ix\_pracownik\_klub} -- przyspieszenie wyszukiwania pracowników zatrudnionych w danym klubie.\\
+    \item \texttt{ix\_pracownik\_klub} -- indeks klucza obcego łączącego pracowników z klubem.\\
     \texttt{CREATE INDEX ix\_pracownik\_klub ON Pracownik (ID\_klubu);}
 \end{itemize}
 
 \paragraph{Stadion}
 \begin{itemize}
-    \item \texttt{ix\_stadion\_klub} -- przyspieszenie wyszukiwania stadionów należących do określonego klubu.\\
+    \item \texttt{ix\_stadion\_klub} -- indeks klucza obcego łączącego stadiony z klubem.\\
     \texttt{CREATE INDEX ix\_stadion\_klub ON Stadion (ID\_klubu);}
-\end{itemize}
-
-\paragraph{Godziny\_otwarcia}
-\begin{itemize}
-    \item \texttt{ix\_godziny\_stadion} -- szybkie pobieranie harmonogramu otwarcia dla wybranego stadionu.\\
-    \texttt{CREATE INDEX ix\_godziny\_stadion ON Godziny\_otwarcia (ID\_stadionu);}
 \end{itemize}
 
 \paragraph{Cwiczenie}
 \begin{itemize}
-    \item \texttt{ix\_cwiczenie\_klub} -- przyspieszenie wyszukiwania oferty ćwiczeń prowadzonych przez dany klub.\\
+    \item \texttt{ix\_cwiczenie\_klub} -- indeks klucza obcego łączącego ofertę ćwiczeń z klubem.\\
     \texttt{CREATE INDEX ix\_cwiczenie\_klub ON Cwiczenie (ID\_klubu);}
 \end{itemize}
 
@@ -649,12 +641,26 @@ W silniku Oracle Database klucze główne (\texttt{PRIMARY KEY}) oraz ograniczen
     \texttt{CREATE INDEX ix\_grafik\_czas\_rozpoczecia ON Grafik (Czas\_rozpoczecia);}
 \end{itemize}
 
+\paragraph{Tabele pośredniczące (indeksy na drugiej kolumnie klucza złożonego)}
+\begin{itemize}
+    \item \texttt{ix\_ps\_stadion} -- wyszukiwanie pracowników przypisanych do stadionu.\\
+    \texttt{CREATE INDEX ix\_ps\_stadion ON Pracownik\_Stadion (ID\_stadionu);}
+    \item \texttt{ix\_ts\_sportowiec} -- wyszukiwanie trenerów przypisanych do sportowca.\\
+    \texttt{CREATE INDEX ix\_ts\_sportowiec ON Trener\_Sportowiec (ID\_sportowca);}
+    \item \texttt{ix\_cs\_stadion} -- wyszukiwanie ćwiczeń realizowanych na stadionie.\\
+    \texttt{CREATE INDEX ix\_cs\_stadion ON Cwiczenie\_Stadion (ID\_stadionu);}
+    \item \texttt{ix\_ss\_stadion} -- wyszukiwanie sportowców uczęszczających na stadion.\\
+    \texttt{CREATE INDEX ix\_ss\_stadion ON Sportowiec\_Stadion (ID\_stadionu);}
+    \item \texttt{ix\_sc\_cwiczenie} -- wyszukiwanie sportowców wykonujących dane ćwiczenie.\\
+    \texttt{CREATE INDEX ix\_sc\_cwiczenie ON Sportowiec\_Cwiczenie (ID\_cwiczenia);}
+\end{itemize}
+
 \clearpage
 \subsection{Skrypt SQL zakładający bazę danych}
-Poniżej zamieszczono pełny skrypt DDL dla silnika Oracle Database 23ai, obejmujący usunięcie ewentualnych istniejących tabel, utworzenie 9 tabel głównych i 5 tabel pośredniczących wraz z więzami integralności oraz definicję indeksów.
+Poniżej zamieszczono pełny, poprawiony skrypt DDL dla silnika Oracle Database 23ai, dokładnie odzwierciedlający schemat ER na poziomie logicznym (\cref{fig:er-faktyczny}) przy założeniu jednego klubu o jednej nazwie. Skrypt obejmuje usunięcie ewentualnych istniejących tabel, utworzenie 9 tabel głównych i 5 tabel pośredniczących wraz z kompletem więzów integralności, definicję indeksów oraz wyzwalacze egzekwujące wielowierszowe i zależne od daty reguły biznesowe.
 
-\begin{lstlisting}[basicstyle=\ttfamily\footnotesize, caption={Skrypt SQL tworzący strukturę bazy danych}]
--- Usunięcie istniejących tabel
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize, caption={Poprawiony skrypt SQL tworzący strukturę bazy danych}]
+-- Usunięcie istniejących tabel (Oracle Database 23ai)
 DROP TABLE IF EXISTS Sportowiec_Cwiczenie CASCADE CONSTRAINTS PURGE;
 DROP TABLE IF EXISTS Sportowiec_Stadion   CASCADE CONSTRAINTS PURGE;
 DROP TABLE IF EXISTS Cwiczenie_Stadion    CASCADE CONSTRAINTS PURGE;
@@ -670,9 +676,9 @@ DROP TABLE IF EXISTS Trener               CASCADE CONSTRAINTS PURGE;
 DROP TABLE IF EXISTS Pracownik            CASCADE CONSTRAINTS PURGE;
 DROP TABLE IF EXISTS Klub                 CASCADE CONSTRAINTS PURGE;
 
--- Tabele główne
+-- Tabele główne (INTEGER odpowiada typowi NUMBER(38,0) w Oracle)
 CREATE TABLE Klub (
-    ID_klubu       INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL,
+    ID_klubu       INTEGER      DEFAULT 1 NOT NULL,
     Nazwa          VARCHAR2(50) NOT NULL,
     Miasto         VARCHAR2(50) NOT NULL,
     Ulica          VARCHAR2(50) NOT NULL,
@@ -682,9 +688,14 @@ CREATE TABLE Klub (
     NIP            CHAR(10)     NOT NULL,
     REGON          VARCHAR2(14),
     Data_zalozenia DATE,
-    CONSTRAINT pk_klub       PRIMARY KEY (ID_klubu),
-    CONSTRAINT uq_klub_nip   UNIQUE (NIP),
-    CONSTRAINT uq_klub_regon UNIQUE (REGON)
+    CONSTRAINT pk_klub        PRIMARY KEY (ID_klubu),
+    CONSTRAINT chk_klub_jeden CHECK (ID_klubu = 1),
+    CONSTRAINT uq_klub_nazwa  UNIQUE (Nazwa),
+    CONSTRAINT uq_klub_nip    UNIQUE (NIP),
+    CONSTRAINT uq_klub_regon  UNIQUE (REGON),
+    CONSTRAINT chk_klub_kod   CHECK (REGEXP_LIKE(Kod_pocztowy, '^[0-9]{2}-[0-9]{3}$')),
+    CONSTRAINT chk_klub_nip   CHECK (REGEXP_LIKE(NIP, '^[0-9]{10}$')),
+    CONSTRAINT chk_klub_regon CHECK (REGEXP_LIKE(REGON, '^([0-9]{9}|[0-9]{14})$'))
 );
 
 CREATE TABLE Pracownik (
@@ -694,9 +705,10 @@ CREATE TABLE Pracownik (
     Stanowisko        VARCHAR2(50) NOT NULL,
     Data_zatrudnienia DATE         NOT NULL,
     Nr_telefonu       CHAR(9),
-    ID_klubu          INTEGER      NOT NULL,
+    ID_klubu          INTEGER      DEFAULT 1 NOT NULL,
     CONSTRAINT pk_pracownik      PRIMARY KEY (ID_pracownika),
-    CONSTRAINT fk_pracownik_klub FOREIGN KEY (ID_klubu) REFERENCES Klub (ID_klubu)
+    CONSTRAINT fk_pracownik_klub FOREIGN KEY (ID_klubu) REFERENCES Klub (ID_klubu),
+    CONSTRAINT chk_pracownik_tel CHECK (REGEXP_LIKE(Nr_telefonu, '^[0-9]{9}$'))
 );
 
 CREATE TABLE Trener (
@@ -721,9 +733,10 @@ CREATE TABLE Stadion (
     Kod_pocztowy CHAR(6)      NOT NULL,
     Typ_obiektu  VARCHAR2(50) NOT NULL,
     Nawierzchnia VARCHAR2(50) NOT NULL,
-    ID_klubu     INTEGER      NOT NULL,
+    ID_klubu     INTEGER      DEFAULT 1 NOT NULL,
     CONSTRAINT pk_stadion      PRIMARY KEY (ID_stadionu),
-    CONSTRAINT fk_stadion_klub FOREIGN KEY (ID_klubu) REFERENCES Klub (ID_klubu)
+    CONSTRAINT fk_stadion_klub FOREIGN KEY (ID_klubu) REFERENCES Klub (ID_klubu),
+    CONSTRAINT chk_stadion_kod CHECK (REGEXP_LIKE(Kod_pocztowy, '^[0-9]{2}-[0-9]{3}$'))
 );
 
 -- Godziny otwarcia wydzielone z tabeli Stadion
@@ -736,7 +749,10 @@ CREATE TABLE Godziny_otwarcia (
     CONSTRAINT pk_godziny         PRIMARY KEY (ID_godzin),
     CONSTRAINT fk_godziny_stadion FOREIGN KEY (ID_stadionu) REFERENCES Stadion (ID_stadionu),
     CONSTRAINT uq_godziny_dzien   UNIQUE (ID_stadionu, Dzien_tygodnia),
-    CONSTRAINT chk_godziny_dzien  CHECK (Dzien_tygodnia BETWEEN 1 AND 7)
+    CONSTRAINT chk_godziny_dzien  CHECK (Dzien_tygodnia BETWEEN 1 AND 7),
+    CONSTRAINT chk_godziny_otw    CHECK (REGEXP_LIKE(Godzina_otwarcia, '^([01][0-9]|2[0-3]):[0-5][0-9]$')),
+    CONSTRAINT chk_godziny_zam    CHECK (REGEXP_LIKE(Godzina_zamkniecia, '^([01][0-9]|2[0-3]):[0-5][0-9]$')),
+    CONSTRAINT chk_godziny_zakres CHECK (Godzina_zamkniecia > Godzina_otwarcia)
 );
 
 CREATE TABLE Cwiczenie (
@@ -747,7 +763,7 @@ CREATE TABLE Cwiczenie (
     Poziom_trudnosci INTEGER      NOT NULL,
     Liczba_powtorzen INTEGER,
     Opis             CLOB,
-    ID_klubu         INTEGER      NOT NULL,
+    ID_klubu         INTEGER      DEFAULT 1 NOT NULL,
     CONSTRAINT pk_cwiczenie      PRIMARY KEY (ID_cwiczenia),
     CONSTRAINT fk_cwiczenie_klub FOREIGN KEY (ID_klubu) REFERENCES Klub (ID_klubu),
     CONSTRAINT chk_cwic_czas     CHECK (Czas_trwania_min > 0),
@@ -763,7 +779,9 @@ CREATE TABLE Sportowiec (
     Dyscyplina      VARCHAR2(50) NOT NULL,
     Data_dolaczenia DATE         NOT NULL,
     Nr_licencji     CHAR(14),
-    CONSTRAINT pk_sportowiec PRIMARY KEY (ID_sportowca)
+    CONSTRAINT pk_sportowiec          PRIMARY KEY (ID_sportowca),
+    CONSTRAINT uq_sportowiec_licencja UNIQUE (Nr_licencji),
+    CONSTRAINT chk_sportowiec_daty    CHECK (Data_dolaczenia >= Data_urodzenia)
 );
 
 CREATE TABLE Przyrzad (
@@ -797,7 +815,7 @@ CREATE TABLE Grafik (
     CONSTRAINT chk_grafik_czas      CHECK (Czas_zakonczenia > Czas_rozpoczecia)
 );
 
--- Tabele pośrednie dla relacji N:N
+-- Tabele pośrednie dla relacji M:N
 CREATE TABLE Pracownik_Stadion (
     ID_pracownika INTEGER NOT NULL,
     ID_stadionu   INTEGER NOT NULL,
@@ -839,26 +857,123 @@ CREATE TABLE Sportowiec_Cwiczenie (
 );
 
 -- Indeksy na kluczach obcych i kolumnach filtrujących
-CREATE INDEX ix_pracownik_klub          ON Pracownik (ID_klubu);
-CREATE INDEX ix_stadion_klub            ON Stadion (ID_klubu);
-CREATE INDEX ix_godziny_stadion         ON Godziny_otwarcia (ID_stadionu);
-CREATE INDEX ix_cwiczenie_klub          ON Cwiczenie (ID_klubu);
-CREATE INDEX ix_przyrzad_stadion        ON Przyrzad (ID_stadionu);
-CREATE INDEX ix_przyrzad_stan_techniczny ON Przyrzad (Stan_techniczny);
-CREATE INDEX ix_grafik_cwiczenie        ON Grafik (ID_cwiczenia);
-CREATE INDEX ix_grafik_stadion          ON Grafik (ID_stadionu);
-CREATE INDEX ix_grafik_sport            ON Grafik (ID_sportowca);
-CREATE INDEX ix_grafik_trener           ON Grafik (ID_pracownika);
-CREATE INDEX ix_grafik_przyrzad         ON Grafik (ID_przyrzadu);
-CREATE INDEX ix_grafik_czas_rozpoczecia ON Grafik (Czas_rozpoczecia);
+CREATE INDEX ix_pracownik_klub            ON Pracownik (ID_klubu);
+CREATE INDEX ix_stadion_klub              ON Stadion (ID_klubu);
+CREATE INDEX ix_cwiczenie_klub            ON Cwiczenie (ID_klubu);
+CREATE INDEX ix_przyrzad_stadion          ON Przyrzad (ID_stadionu);
+CREATE INDEX ix_przyrzad_stan_techniczny  ON Przyrzad (Stan_techniczny);
+CREATE INDEX ix_grafik_cwiczenie          ON Grafik (ID_cwiczenia);
+CREATE INDEX ix_grafik_stadion            ON Grafik (ID_stadionu);
+CREATE INDEX ix_grafik_sport              ON Grafik (ID_sportowca);
+CREATE INDEX ix_grafik_trener             ON Grafik (ID_pracownika);
+CREATE INDEX ix_grafik_przyrzad           ON Grafik (ID_przyrzadu);
+CREATE INDEX ix_grafik_czas_rozpoczecia   ON Grafik (Czas_rozpoczecia);
+CREATE INDEX ix_ps_stadion                ON Pracownik_Stadion (ID_stadionu);
+CREATE INDEX ix_ts_sportowiec             ON Trener_Sportowiec (ID_sportowca);
+CREATE INDEX ix_cs_stadion                ON Cwiczenie_Stadion (ID_stadionu);
+CREATE INDEX ix_ss_stadion                ON Sportowiec_Stadion (ID_stadionu);
+CREATE INDEX ix_sc_cwiczenie              ON Sportowiec_Cwiczenie (ID_cwiczenia);
+
+-- Wyzwalacze realizujące reguły biznesowe
+CREATE OR REPLACE TRIGGER trg_pracownik_data_zatrudnienia
+BEFORE INSERT OR UPDATE ON Pracownik
+FOR EACH ROW
+BEGIN
+    IF :NEW.Data_zatrudnienia > SYSDATE THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Data zatrudnienia nie może być późniejsza niż aktualna data.');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_trener_licencja_wazna
+BEFORE INSERT OR UPDATE ON Trener
+FOR EACH ROW
+BEGIN
+    IF :NEW.Waznosc_licencji < TRUNC(SYSDATE) THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Trener musi posiadać ważną licencję trenerską.');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_grafik_walidacja
+BEFORE INSERT OR UPDATE ON Grafik
+FOR EACH ROW
+DECLARE
+    v_waznosc     DATE;
+    v_stadion_prz INTEGER;
+BEGIN
+    IF :NEW.ID_pracownika IS NOT NULL THEN
+        SELECT MAX(Waznosc_licencji) INTO v_waznosc
+        FROM Trener
+        WHERE ID_pracownika = :NEW.ID_pracownika;
+
+        IF v_waznosc IS NOT NULL AND v_waznosc < TRUNC(:NEW.Czas_rozpoczecia) THEN
+            RAISE_APPLICATION_ERROR(-20003, 'Licencja trenera wygasa przed rozpoczęciem zajęć.');
+        END IF;
+    END IF;
+
+    IF :NEW.ID_przyrzadu IS NOT NULL THEN
+        SELECT MAX(ID_stadionu) INTO v_stadion_prz
+        FROM Przyrzad
+        WHERE ID_przyrzadu = :NEW.ID_przyrzadu;
+
+        IF v_stadion_prz IS NOT NULL AND v_stadion_prz <> :NEW.ID_stadionu THEN
+            RAISE_APPLICATION_ERROR(-20004, 'Wybrany przyrząd znajduje się na innym stadionie.');
+        END IF;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_grafik_kolizje
+AFTER INSERT OR UPDATE ON Grafik
+DECLARE
+    v_kolizje INTEGER;
+BEGIN
+    -- Brak nakładających się treningów tego samego sportowca
+    SELECT COUNT(*) INTO v_kolizje
+    FROM Grafik g1
+    JOIN Grafik g2
+      ON g1.ID_sportowca = g2.ID_sportowca
+     AND g1.ID_wpisu < g2.ID_wpisu
+     AND g1.Czas_rozpoczecia < g2.Czas_zakonczenia
+     AND g2.Czas_rozpoczecia < g1.Czas_zakonczenia;
+    IF v_kolizje > 0 THEN
+        RAISE_APPLICATION_ERROR(-20005, 'Sportowiec ma już zaplanowany trening w tym czasie.');
+    END IF;
+
+    -- Brak nakładających się treningów tego samego trenera
+    SELECT COUNT(*) INTO v_kolizje
+    FROM Grafik g1
+    JOIN Grafik g2
+      ON g1.ID_pracownika = g2.ID_pracownika
+     AND g1.ID_wpisu < g2.ID_wpisu
+     AND g1.Czas_rozpoczecia < g2.Czas_zakonczenia
+     AND g2.Czas_rozpoczecia < g1.Czas_zakonczenia;
+    IF v_kolizje > 0 THEN
+        RAISE_APPLICATION_ERROR(-20006, 'Trener prowadzi już inne zajęcia w tym czasie.');
+    END IF;
+
+    -- Brak nakładających się rezerwacji tego samego przyrządu
+    SELECT COUNT(*) INTO v_kolizje
+    FROM Grafik g1
+    JOIN Grafik g2
+      ON g1.ID_przyrzadu = g2.ID_przyrzadu
+     AND g1.ID_wpisu < g2.ID_wpisu
+     AND g1.Czas_rozpoczecia < g2.Czas_zakonczenia
+     AND g2.Czas_rozpoczecia < g1.Czas_zakonczenia;
+    IF v_kolizje > 0 THEN
+        RAISE_APPLICATION_ERROR(-20007, 'Wybrany przyrząd jest już zarezerwowany w tym czasie.');
+    END IF;
+END;
+/
 \end{lstlisting}
 
 \clearpage
 \subsection{Przykłady zapytań i poleceń SQL odnoszących się do bazy danych}
-Poniżej zaprezentowano zestaw przykładowych zapytań i poleceń SQL weryfikujących poprawność działania zaimplementowanej bazy danych w typowych scenariuszach jej użycia.
+Poniżej zaprezentowano zestaw przykładowych zapytań SQL weryfikujących poprawność działania zaimplementowanej bazy danych w typowych scenariuszach jej użycia.
 
 \subsubsection*{1. Szczegółowy harmonogram zaplanowanych treningów}
-Zapytanie pobiera pełny harmonogram zajęć z tabeli \texttt{Grafik}, łącząc ją z tabelami \texttt{Cwiczenie}, \texttt{Stadion} oraz \texttt{Sportowiec} za pomocą złączeń wewnętrznych (\texttt{JOIN}). Złączenia lewostronne (\texttt{LEFT JOIN}) z tabelami \texttt{Pracownik} oraz \texttt{Przyrzad} pozwalają uwzględnić również treningi samodzielne (bez przypisanego trenera) oraz zajęcia niewymagające sprzętu, zastępując wartości \texttt{NULL} czytelnymi etykietami. Wyniki są sortowane chronologicznie według kolumny \texttt{Czas\_rozpoczecia}.
+Zapytanie pobiera pełny harmonogram zajęć z tabeli \texttt{Grafik}, łącząc ją z tabelami \texttt{Cwiczenie}, \texttt{Stadion} oraz \texttt{Sportowiec} za pomocą złączeń wewnętrznych (\texttt{JOIN}). Złączenia lewostronne (\texttt{LEFT JOIN}) z tabelami \texttt{Trener}, \texttt{Pracownik} oraz \texttt{Przyrzad} odwzorowują opcjonalne klucze obce ze schematu logicznego i pozwalają uwzględnić również treningi własne (bez przypisanego trenera) oraz zajęcia niewymagające sprzętu, zastępując wartości \texttt{NULL} czytelnymi etykietami. Wyniki są sortowane chronologicznie według kolumny \texttt{Czas\_rozpoczecia}.
 
 \begin{lstlisting}[caption={Szczegółowy harmonogram zaplanowanych sesji treningowych}]
 SELECT TO_CHAR(g.Czas_rozpoczecia, 'YYYY-MM-DD HH24:MI') AS start_treningu,
@@ -873,7 +988,8 @@ FROM Grafik g
 JOIN Cwiczenie c      ON g.ID_cwiczenia  = c.ID_cwiczenia
 JOIN Stadion st       ON g.ID_stadionu   = st.ID_stadionu
 JOIN Sportowiec sp    ON g.ID_sportowca  = sp.ID_sportowca
-LEFT JOIN Pracownik p ON g.ID_pracownika = p.ID_pracownika
+LEFT JOIN Trener t    ON g.ID_pracownika = t.ID_pracownika
+LEFT JOIN Pracownik p ON t.ID_pracownika = p.ID_pracownika
 LEFT JOIN Przyrzad pr ON g.ID_przyrzadu  = pr.ID_przyrzadu
 ORDER BY g.Czas_rozpoczecia;
 \end{lstlisting}
@@ -886,7 +1002,7 @@ ORDER BY g.Czas_rozpoczecia;
 \end{figure}
 
 \subsubsection*{2. Wykaz trenerów wraz z liczbą prowadzonych sportowców}
-Zapytanie pobiera dane osobowe pracowników będących trenerami, ich specjalizację oraz numer licencji, a następnie wyznacza liczbę sportowców przypisanych do każdego trenera w tabeli pośredniej \texttt{Trener\_Sportowiec}.
+Zapytanie pobiera dane osobowe pracowników będących trenerami, ich specjalizację oraz numer licencji, a następnie wyznacza liczbę sportowców przypisanych do każdego trenera w tabeli pośredniej \texttt{Trener\_Sportowiec} (uwzględniając również trenerów bez aktualnie przypisanych zawodników dzięki \texttt{LEFT JOIN}).
 
 \begin{lstlisting}[caption={Trenerzy oraz liczba przypisanych do nich sportowców}]
 SELECT p.Imie, p.Nazwisko, t.Specjalizacja, t.Nr_licencji,
@@ -894,8 +1010,8 @@ SELECT p.Imie, p.Nazwisko, t.Specjalizacja, t.Nr_licencji,
 FROM Pracownik p
 JOIN Trener t ON p.ID_pracownika = t.ID_pracownika
 LEFT JOIN Trener_Sportowiec ts ON t.ID_pracownika = ts.ID_pracownika
-GROUP BY p.Imie, p.Nazwisko, t.Specjalizacja, t.Nr_licencji
-ORDER BY liczba_sportowcow DESC;
+GROUP BY p.ID_pracownika, p.Imie, p.Nazwisko, t.Specjalizacja, t.Nr_licencji
+ORDER BY liczba_sportowcow DESC, p.Nazwisko, p.Imie;
 \end{lstlisting}
 
 \begin{figure}[H]
@@ -907,14 +1023,14 @@ ORDER BY liczba_sportowcow DESC;
 
 
 \subsubsection*{3. Wyszukiwanie przyrządów wymagających naprawy lub przeglądu}
-Zapytanie wykorzystuje indeks na kolumnie \texttt{Stan\_techniczny} i zwraca listę przyrządów o stanie innym niż \texttt{Sprawny} wraz z nazwą stadionu, na którym dany sprzęt się znajduje.
+Zapytanie filtruje tabelę \texttt{Przyrzad} za pomocą predykatu \texttt{IN}, co pozwala optymalizatorowi Oracle wykorzystać indeks \texttt{ix\_przyrzad\_stan\_techniczny} (w przeciwieństwie do operatora nierówności \texttt{<>}), i zwraca listę przyrządów wymagających serwisu wraz z nazwą stadionu, na którym dany sprzęt się znajduje.
 
 \begin{lstlisting}[caption={Zestawienie przyrządów niesprawnych wraz z ich lokalizacją}]
 SELECT pr.ID_przyrzadu, pr.Rodzaj, pr.Nazwa,
        pr.Stan_techniczny, s.Nazwa AS stadion
 FROM Przyrzad pr
 JOIN Stadion s ON pr.ID_stadionu = s.ID_stadionu
-WHERE pr.Stan_techniczny <> 'Sprawny'
+WHERE pr.Stan_techniczny IN ('Do naprawy', 'Uszkodzony', 'Wymaga przeglądu')
 ORDER BY s.Nazwa, pr.Nazwa;
 \end{lstlisting}
 
